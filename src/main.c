@@ -2,6 +2,7 @@
 	David BUI
 	Yohann MATTEO
 	Mathias BRANGER
+	Florian PIERRE-LOUIS
 */
 
 #include <stdio.h>

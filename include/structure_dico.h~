@@ -1,0 +1,84 @@
+/*	POLYTECH Grenoble - RICM3 2015- PLS
+	David BUI
+	Yohann MATTEO
+	Mathias BRANGER
+	Florian PIERRE-LOUIS
+*/
+
+
+#ifndef STRUCTURE_MAILLON_H
+#define STRUCTURE_MAILLON_H
+
+#include <stdint.h>
+
+#ifdef INT8
+	typedef uint8_t maillon_t;
+#endif
+
+
+#ifdef INT16
+	typedef uint16_t maillon_t;
+#endif
+
+
+#ifdef INT64
+	typedef uint64_t maillon_t;
+#endif
+
+
+#if !defined(INT8) && !defined(INT16) && !defined(INT64)
+	typedef uint32_t maillon_t;
+#endif
+
+#define CAR_MAX ((unsigned int)((sizeof(maillon_t)*8)/5))
+
+
+typedef struct {
+
+	int ligne, colonne;
+	
+}emplacement_t;
+
+
+
+typedef struct un_maillon un_maillon;
+struct un_maillon
+{
+    maillon_t m;
+    struct un_maillon *suc;
+};
+typedef un_maillon* liste_maillon;
+
+
+
+
+typedef struct un_emplacement un_emplacement;
+struct un_emplacement
+{
+    emplacement_t e;
+    struct un_emplacement *suc;
+};
+typedef un_emplacement* liste_emplacement;
+
+
+
+
+typedef struct {
+ 	un_maillon* tete_mot;
+ 	un_maillon* queue_mot;
+ 	un_emplacement* tete_liste;
+ 	un_emplacement* queue_liste;
+}mot_t;
+
+
+
+typedef struct un_mot un_mot;
+struct un_mot
+{
+    mot_t mot;
+    struct un_mot *suc;
+};
+ 
+typedef un_mot* dictionnaire;
+
+#endif
