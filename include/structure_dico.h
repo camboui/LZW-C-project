@@ -10,22 +10,15 @@
 #define STRUCTURE_DICO_H
 
 
-
-typedef struct {
-
-	int ligne, colonne;
-	
-}emplacement_t;
-
-
-
-typedef struct un_maillon un_maillon;
-struct un_maillon
+typedef struct un_noeud un_noeud;
+struct un_noeud
 {
-    maillon_t m;
-    struct un_maillon *suc;
+    int caractere, code;
+    struct un_noeud *pere;
+    struct un_noeud *frere;
+    struct un_noeud *fils;
 };
-typedef un_maillon* liste_maillon;
+typedef un_noeud* Dictionnaire;
 
 
 #endif
