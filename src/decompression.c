@@ -7,6 +7,16 @@
 
 #include <math.h>
 
+void Init_tab (*noeud *tab, int nb_case){
+	
+	int i=0; 
+	while(tab[i] != NULL){
+		i++;
+	}
+	while(i<nb_case){
+		tab[i] = NULL;
+	}
+}
 
 void Decompression (char *nom_fichier){
 
@@ -25,6 +35,12 @@ void Decompression (char *nom_fichier){
 	
 	/*Creation d'un tableau d'adresse de noeud*/
 	*noeud tab_code[512];
+	lg=0;
+	while (lg<512){
+		tab_code[lg] = NULL;
+		lg++;
+	}
+	
 	
 	void *tab_code_re;
 	char c[10];
@@ -51,6 +67,7 @@ void Decompression (char *nom_fichier){
 				*tab_code_re = realloc(*tab_code,pow(2,nb_bit)*sizeof(*noeud));
 				if (tab_code_re != NULL){
 					tab_code = tab_code_re;
+					Init_tab (tab_code,pow(2,nb_bit));
 				}
 				else {
 					printf("Problème mémoire, cause -> realloc");
