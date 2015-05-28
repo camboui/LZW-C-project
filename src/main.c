@@ -12,24 +12,29 @@
 
 int main (int argc, char *argv[])
 {
-	if (argc <=3 && argc >=2)
+
+	if (argc == 3 )
 	{
-		if(strcmp(argv[argc-1],"-c"))
+		if(strcmp(argv[argc-2],"-c")==0)
 		{
-			printf("\n\nCompression ");
+			printf("\nCompression ");
 			Compression(argv[argc-1]);
 		}
-		else if(strcmp(argv[argc-1],"-d"))
+		else if(strcmp(argv[argc-2],"-d")==0)
 		{
-			printf("\n\nDecompression");
+			printf("\nDecompression");
 			Decompression(argv[argc-1]);
+		}
+		else
+		{
+			printf("\nErreur d'utilisation : ./lzw [-c/-d] [fichier]");
 		}
 	}
 	else
 	{
-		printf("\n\nErreur d'utilisation : ./lzw [-c/-d] [fichier]");
+		printf("\nErreur d'utilisation : ./lzw [-c/-d] [fichier]");
 	}
-	printf("\n");
+	printf("\n\n");
 	return 0;
 }
 
