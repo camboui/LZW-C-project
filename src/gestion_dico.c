@@ -26,13 +26,51 @@ FONCTIONS A AJOUTER :
 
 Dictionnaire Init (void)
 {
-	Dictionnaire d=NULL;
-	d.malloc
+	int i=0;
+	Dictionnaire d;
+	d.racine=NULL;
+	d.racine=malloc(sizeof(un_noeud));
+	un_noeud*AC=NULL;
 	
+	if (d.racine==NULL)
+	{
+		fprintf (stderr,"Echec de l'allocation de la racine dans Init();\n");
+		exit (EXIT_FAILURE);
+	}
 	
-	return n;
+	AC=d.racine;
+	for(i=0;i<START;i++)
+	{
+		AC->code = i;
+		AC->car  = (Caractere) i;
+		AC->pere=NULL;
+		AC->fils=NULL;
+		AC->frere=malloc(sizeof(un_noeud));
+		if (AC->frere==NULL)
+		{
+			fprintf (stderr,"Echec de l'allocation frere dans Init();\n");
+			exit (EXIT_FAILURE);
+		}
+		AC=AC->frere;
+	}
+	AC->frere=NULL;
+	
+	return d;
 }
 
+
+void Lire_Dico(Dictionnaire d)
+{
+	un_noeud*AC=d.racine;
+	if (AC!=NULL)
+	{
+		while (AC->frere !=NULL)
+		{
+			printf("\n%i %c",AC->code, AC->car);
+			AC = AC->frere;
+		}
+	}
+}
 un_noeud* Est_Dans_Dico (wc, dico)
 {
 
