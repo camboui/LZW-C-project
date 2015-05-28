@@ -5,6 +5,7 @@
 	Florian PIERRE-LOUIS
 */
 
+#include <math.h>
 
 
 void Decompression (char *nom_fichier){
@@ -22,21 +23,25 @@ void Decompression (char *nom_fichier){
 	Dictionnaire dico;
 	dico = Init();
 	
+	/*Creation d'un tableau d'adresse de code*/
+	*noeud tab_code[512];
+	
+	void *tab_code_re;
 	char c[10];
 	char chaine[100];
-	int nb_bit = 9;
-	int bit_restant;
 	Code code = 0;
 	un_noeud lettre;
 	char decode; 
-	int i,j;
-	int fin_decomp = 0;
+	int i,j,bit_restant,fin_decomp,nb_bit;
+	nb_bit = 9;
+	fin_decomp = 0;
 	while (fin_decomp != 1){
 		/*get_code permet de recuperer le code du prochain caractere a decoder et utilise les bit en trop du code precedent*/
 		code = get_code(*f_entree,*bit_restant,nb_bit);
 		
 		lettre = CodeVersChaine (code);
 		
+		/*switch pour differencier les 3 codes rajoutés à la main*/
 		switch(code){
 			/*fin de fichier*/
 			case 256 :
@@ -45,6 +50,14 @@ void Decompression (char *nom_fichier){
 			/*Separateur bit*/
 			case 257 : 
 				nb_bit++;
+				*tab_code_re = realloc(*tab_code,pow(2,nb_bit)*sizeof(*noeud));
+				if (tab_code_re != NULL){
+					tab_code = tab_code_re;
+				}
+				else {
+					printf("Problème mémoire, cause -> realloc");
+					exit(EXIT_FAILURE);
+				}
 				break;
 			/*Reinit dico*/
 			case 258 : break;
