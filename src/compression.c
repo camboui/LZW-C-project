@@ -7,6 +7,14 @@
 
 void Compression (char *nom_fichier)
 {
+	Dictionnaire dico = NULL;
+	dico = Init ();
+	if (fichier == NULL)
+	{
+		fprintf (stderr,"Echec de l'initialisation du dico\n");
+		exit (EXIT_FAILURE);
+	}
+	
 	FILE *fichier;
 	fichier = fopen (nom_fichier,"r");
 	if (fichier == NULL)

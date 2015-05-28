@@ -26,8 +26,13 @@ struct un_noeud
     struct un_noeud *frere; /*Un frere possède le même préfixe mais pas le même suffixe par rapport à ses autres frères*/
     struct un_noeud *fils;
 };
+
 /*Définition d'une liste de noeuds*/
-typedef un_noeud* Dictionnaire;
+typedef struct Dictionnaire Dictionnaire;
+struct Dictionnaire
+{
+    struct un_noeud *racine;
+};
 
 /*Initialisation d'un dictionnaire*/
 Dictionnaire Init (void);
