@@ -43,13 +43,15 @@ Dictionnaire Ajout_Fils (Dictionnaire d);
 Dictionnaire Est_Dans_Dico (Caractere car, Dictionnaire d);
 
 /*Renvoie le code associé à sa séquence*/
-Code SéquenceVersCode (Caractere *séquence, int longueur);
+Code SequenceVersCode (Caractere *sequence, int longueur);
 
 /*renvoie séquence et affecte la longueur associée à code*/
-/*Code *CodeVersChaine (Code code, int *longueur)*/
+/*Code *CodeVersChaine (Code code, int *longueur);*/
 
+/*Compresse le fichier dont le nom est donné en paramètre*/
+void Compression (char *nom_fichier);
 
-
-
+/*Compresse le fichier dont le nom est donné en paramètre*/
+void Decompression (char *nom_fichier);
 
 #endif
