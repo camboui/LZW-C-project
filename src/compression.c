@@ -12,7 +12,7 @@ ex : 12 bits à lire et fin de fichier, bourrer 3 bits à 0*/
 FONCTIONS NECESSAIRES :
 
 	Est_Dans_Dico (wc, dico);
-	Ajouter_Noeud_Dico (code,wc,Place);
+	Ajouter_Noeud_Dico (dico,code,wc,Place);
 
 */
 #include <stdio.h>
@@ -66,14 +66,13 @@ void Compression (char *nom_entree)
 			}
 			else
 			{
-				Ajouter_Noeud_Dico (code,wc,Place);/*Ajoute le Noeud qu'il soit Fils ou Frere*/
+				Ajouter_Noeud_Dico (dico,code,wc,Place);/*Ajoute le Noeud qu'il soit Fils ou Frere*/
 				code ++;
 				fprintf(f_sortie,"%s",w);
 				strcpy(w,c);
 			}
 	}
 	fprintf(f_sortie,"%s",w);
-
 	
 	fclose(f_entree);
 	fclose(f_sortie);
