@@ -23,7 +23,7 @@ void Decompression (char *nom_fichier){
 	Dictionnaire dico;
 	dico = Init();
 	
-	/*Creation d'un tableau d'adresse de code*/
+	/*Creation d'un tableau d'adresse de noeud*/
 	*noeud tab_code[512];
 	
 	void *tab_code_re;
@@ -37,10 +37,8 @@ void Decompression (char *nom_fichier){
 	fin_decomp = 0;
 	while (fin_decomp != 1){
 		/*get_code permet de recuperer le code du prochain caractere a decoder et utilise les bit en trop du code precedent*/
-		code = get_code(*f_entree,*bit_restant,nb_bit);
-		
-		lettre = CodeVersChaine (code);
-		
+		code = get_code(*f_entree,*bit_restant,nb_bit,tab_code);
+
 		/*switch pour differencier les 3 codes rajoutés à la main*/
 		switch(code){
 			/*fin de fichier*/
@@ -64,7 +62,15 @@ void Decompression (char *nom_fichier){
 			default : 
 				i=0;
 				chaine[0]='\0';
-				while (lettre.parent != NULL){
+				if (code>258){
+					lettre = tab_code[code-259];
+				}
+				else {
+					chaine[0] = code;
+					chaine[1] = '\0';
+					lettre = NULL;
+				}
+				while (lettre != NULL){
 			
 					lg = strlen(chaine);
 					for(i=lg;i>0;i--){
@@ -73,7 +79,6 @@ void Decompression (char *nom_fichier){
 					}
 					chaine[0]=lettre.car;
 					lettre = lettre.parent;
-			
 				}
 				fprintf(f_sortie,"%s",chaine);
 				break;

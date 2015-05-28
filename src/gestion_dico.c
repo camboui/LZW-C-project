@@ -14,10 +14,8 @@ FONCTIONS A AJOUTER :
 	Ajouter_Noeud_Dico (dico,code,wc,Place);
 	
 	get_code permet de recuperer le code du prochain caractere a decoder et utilise les bit en trop du code precedent
-	code = get_code(*f_entree,*bit_restant,nb_bit);
-
-	peut etre pas a faire vu qu'on aura le tab à voir
-	lettre = CodeVersChaine (code);
+	Il rajoutera aussi les nouveaux codes
+	code = get_code(*f_entree,*bit_restant,nb_bit, *tab_code);
 */
 
 #include <stdio.h>
