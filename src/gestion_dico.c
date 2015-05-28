@@ -7,7 +7,10 @@
 /*
 FONCTIONS A AJOUTER :
 
+	Retourne null si présent dans le dico, sinon retourne le noeud où il faut ajouter le noeud
 	Est_Dans_Dico (wc, dico);
+	
+	Ajoute le Noeud qu'il soit Fils ou Frere
 	Ajouter_Noeud_Dico (dico,code,wc,Place);
 	
 	get_code permet de recuperer le code du prochain caractere a decoder et utilise les bit en trop du code precedent
@@ -16,14 +19,17 @@ FONCTIONS A AJOUTER :
 	peut etre pas a faire vu qu'on aura le tab à voir
 	lettre = CodeVersChaine (code);
 */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "structure_dico.h"
 
+
 Dictionnaire Init (void)
 {
 	Dictionnaire d=NULL;
+	d.malloc
 	
 	
 	return n;
