@@ -66,7 +66,7 @@ void Compression (char *nom_entree)
 			}
 			else
 			{
-				Ajouter_Noeud_Dico (dico,code,wc,Place);/*Ajoute le Noeud qu'il soit Fils ou Frere*/
+				Ajouter_Noeud_Dico (dico,code,c,Place);/*Ajoute le Noeud qu'il soit Fils ou Frere*/
 				code ++;
 				fprintf(f_sortie,"%s",w);
 				strcpy(w,c);

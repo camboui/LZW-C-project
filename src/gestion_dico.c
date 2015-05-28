@@ -59,30 +59,19 @@ Dictionnaire Init (void)
 }
 
 
-void Lire_Dico(Dictionnaire d)
+un_noeud* Est_Dans_Dico (char *wc, Dictionnaire d,int *fils_ou_frere)
 {
-	un_noeud*AC=d.racine;
-	if (AC!=NULL)
-	{
-		while (AC->frere !=NULL)
-		{
-			printf("\n%i %c",AC->code, AC->car);
-			AC = AC->frere;
-		}
-	}
-}
-
-un_noeud* Est_Dans_Dico (char *wc, Dictionnaire d)
-{
-	un_noeud*AC=d.racine;
-	int i=0, taille = strlen(wc)-1;
+	un_noeud *AC=d.racine;
+	int i=0, taille = strlen(wc)-1,dernier=0;
+	
 	while (i != taille)
 	{
-		while(AC->frere !=NULL && AC->car!=wc[i])
+		while(AC->frere != NULL && AC->car != wc[i])
 		{
 			AC=AC->frere;
 		}
-		if(AC->fils !=NULL  && AC->car==wc[i])
+
+		if(AC->fils != NULL  && AC->car == wc[i])
 		{
 			AC=AC->fils;
 		}
@@ -90,18 +79,50 @@ un_noeud* Est_Dans_Dico (char *wc, Dictionnaire d)
 		{
 			break;
 		}
+		
 		i++;
 	}
 	
 	if(AC->car==wc[i-1])/*Si on l'a trouvé, on renvoit null*/
 		AC=NULL;
-
+	
+	else if (i==taille && AC->car==wc[i-1])  
+		*fils_ou_frere=1;/*Fils = 0 ---- Frere = 1*/
+	else
+		*fils_ou_frere=0;
+	
 	return AC;
 }
 
-void Ajouter_Noeud_Dico (dico,code,wc,Place)
-{
+/*UN SEUL ET UNIQUE PERE !!!!*/
 
+void Ajouter_Noeud_Dico (Code code,char c,un_noeud* Place,int fils_ou_frere)
+{
+	un_noeud *newN = malloc(sizeof(un_noeud));
+	if (newN==NULL)
+	{
+		fprintf (stderr,"Echec de l'allocation du noeud dans Ajouter_Noeud_Dico();\n");
+		exit (EXIT_FAILURE);
+	}
+	newN -> code = code ;
+	newN -> car = (Caractere) c ;	
+	newN -> frere = NULL ;
+	newN -> fils =  NULL ;
+
+	if(fils_ou_frere==0)/*Si le fils est nul c'est qu'on doit ajouter un fils*/
+	{
+		newN -> pere = Place ;
+		Place -> fils =  newN ;
+		printf("\n%c",Place->fils->car);
+		printf("\n 11111");
+	}
+	else
+	{
+		newN -> pere = Place->pere;
+		Place -> frere = newN ; 
+		printf("\n 222222");
+	}
+	
 }
 
 /*
@@ -159,9 +180,11 @@ Code Recherche_code (int *bit_restant, int *nb_bit_restant, int nb_bit, char *ch
 
 }
 
-int parcours_tab_code (*noeud *tab_code){
+int parcours_tab_code (*noeud *tab_code)
+{
 	int i=0; 
-	while(tab_code[i]!=NULL){
+	while(tab_code[i]!=NULL)
+	{
 		i++;
 	}
 	return i;
