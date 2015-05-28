@@ -71,9 +71,32 @@ void Lire_Dico(Dictionnaire d)
 		}
 	}
 }
-un_noeud* Est_Dans_Dico (wc, dico)
-{
 
+un_noeud* Est_Dans_Dico (char *wc, Dictionnaire d)
+{
+	un_noeud*AC=d.racine;
+	int i=0, taille = strlen(wc)-1;
+	while (i != taille)
+	{
+		while(AC->frere !=NULL && AC->car!=wc[i])
+		{
+			AC=AC->frere;
+		}
+		if(AC->fils !=NULL  && AC->car==wc[i])
+		{
+			AC=AC->fils;
+		}
+		else
+		{
+			break;
+		}
+		i++;
+	}
+	
+	if(AC->car==wc[i-1])/*Si on l'a trouvé, on renvoit null*/
+		AC=NULL;
+
+	return AC;
 }
 
 void Ajouter_Noeud_Dico (dico,code,wc,Place)
