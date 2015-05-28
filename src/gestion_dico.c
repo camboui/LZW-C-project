@@ -109,9 +109,9 @@ void Ajouter_Noeud_Dico (dico,code,wc,Place)
   param : a node
   return a caractere
 */
-Caractere get_first_letter(un_noeud node)
+Caractere get_first_letter(un_noeud *node)
 {
-    un_noeud*AC=node;
+    un_noeud *AC= *node;
     while((AC -> pere) != NULL)
       {
 	AC= AC -> pere;
