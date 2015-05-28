@@ -37,7 +37,7 @@ void Decompression (char *nom_fichier){
 	fin_decomp = 0;
 	while (fin_decomp != 1){
 		/*get_code permet de recuperer le code du prochain caractere a decoder et utilise les bit en trop du code precedent*/
-		code = get_code(*f_entree,*bit_restant,nb_bit,tab_code);
+		code = get_code(*dico,*f_entree,*bit_restant,nb_bit,tab_code);
 
 		/*switch pour differencier les 3 codes rajoutés à la main*/
 		switch(code){
