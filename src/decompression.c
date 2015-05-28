@@ -95,7 +95,7 @@ void Decompression (char *nom_fichier){
 						chaine[i]=chaine[i-1];
 					}
 					chaine[0]=lettre.car;
-					lettre = lettre.parent;
+					lettre = lettre -> parent;
 				}
 				fprintf(f_sortie,"%s",chaine);
 				break;
