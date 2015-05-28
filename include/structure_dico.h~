@@ -43,7 +43,7 @@ Dictionnaire Ajout_Fils (Dictionnaire d);
 Dictionnaire Est_Dans_Dico (Caractere car, Dictionnaire d);
 
 /*Renvoie le code associé à sa séquence*/
-Code SéquenceVersCode (Caractere *sequence, int longueur);
+Code SequenceVersCode (Caractere *sequence, int longueur);
 
 /*renvoie séquence et affecte la longueur associée à code*/
 /*Code *CodeVersChaine (Code code, int *longueur);*/

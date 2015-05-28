@@ -11,6 +11,7 @@
 
 
 #include <stdint.h>
+#define START 259
 
 typedef uint8_t Caractere;
 typedef int Code;
