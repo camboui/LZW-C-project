@@ -7,11 +7,12 @@
 
 #ifndef GESTION_DICO_H
 #define GESTION_DICO_H
+#include "structure_dico.h"
 
 Dictionnaire Init (void);
 
 /* si renvoit de temp il a trouve le caractere il faut donc regarder le caractere suivant sinon on doit rajouter ce caractere dans le dico*/
-un_noeud* Est_Dans_Dico (char wc, noeud* AC);
+un_noeud* Est_Dans_Dico (char wc, un_noeud* AC);
 
 
 void Ajouter_Noeud_Dico (Code code,char c,un_noeud* Place);
@@ -28,12 +29,12 @@ Caractere get_first_letter(un_noeud *node);
 Code Recherche_code (int *bit_restant, int *nb_bit_restant, int nb_bit, char *chaine);
 
 
-int parcours_tab_code (*noeud *tab_code);
+int parcours_tab_code (un_noeud **tab_code);
 
 
-void Ajout_Dico_Decomp (Code code_second,*noeud *tab_code,un_noeud *new_noeud,un_noeud *noeud_courant);
+void Ajout_Dico_Decomp (Code code_second,un_noeud **tab_code,un_noeud *new_noeud,un_noeud *noeud_courant);
 
 
-Code get_code(Dictionnaire d, FILE *f, int *bit_restant, int *nb_bit_restant, int nb_bit, noeud* *tab_code);
+Code get_code(Dictionnaire d, FILE *f, int *bit_restant, int *nb_bit_restant, int nb_bit, un_noeud**tab_code);
 
 #endif
