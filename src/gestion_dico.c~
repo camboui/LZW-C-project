@@ -158,7 +158,7 @@ Code Recherche_code (int *bit_restant, int *nb_bit_restant, int nb_bit, char *ch
 }
 
 
-int parcours_tab_code (un_noeud **tab_code)
+int parcours_tab_code (*un_noeud *tab_code)
 {
 	int i=0; 
 	while(tab_code[i]!=NULL)
@@ -169,7 +169,7 @@ int parcours_tab_code (un_noeud **tab_code)
 }
 
 
-void Ajout_Dico_Decomp (Code code_second,un_noeud **tab_code,un_noeud *new_noeud,un_noeud *noeud_courant){
+void Ajout_Dico_Decomp (Code code_second,*un_noeud *tab_code,un_noeud *new_noeud,un_noeud *noeud_courant){
 	
 	/* Cas si le suivant est un mot*/
 	if(code_second>258){

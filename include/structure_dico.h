@@ -9,7 +9,6 @@
 #ifndef STRUCTURE_DICO_H
 #define STRUCTURE_DICO_H
 
-
 #include <stdint.h>
 #define START 259
 
@@ -33,31 +32,5 @@ struct Dictionnaire
 {
     struct un_noeud *racine;
 };
-
-/*Initialisation d'un dictionnaire*/
-Dictionnaire Init (void);
-
-/*Ajout d'un frère en queue*/
-Dictionnaire Ajout_Frere (Dictionnaire d);
-
-/*Ajout d'un fils*/
-Dictionnaire Ajout_Fils (Dictionnaire d);
-
-/*Parcours du dictionnaire.
-  Renvoie Null si le caractère est dans la liste
-  Renvoie la Queue de cette liste sinon*/
-Dictionnaire Est_Dans_Dico (Caractere car, Dictionnaire d);
-
-/*Renvoie le code associé à sa séquence*/
-Code SequenceVersCode (Caractere *sequence, int longueur);
-
-/*renvoie séquence et affecte la longueur associée à code*/
-/*Code *CodeVersChaine (Code code, int *longueur);*/
-
-/*Compresse le fichier dont le nom est donné en paramètre*/
-void Compression (char *nom_fichier);
-
-/*Compresse le fichier dont le nom est donné en paramètre*/
-void Decompression (char *nom_fichier);
 
 #endif

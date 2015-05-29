@@ -10,7 +10,7 @@
 #include <math.h>
 #include "gestion_dico.h"
 
-void Init_tab (un_noeud **tab, int nb_case){
+void Init_tab (*noeud *tab, int nb_case){
 	
 	int i=0; 
 	while(tab[i] != NULL){

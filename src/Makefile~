@@ -10,8 +10,9 @@ CFLAGS = -W -Wall -g -I ../include
 
 EXEC = main
 
-lzw : main.c compression.o decompression.o
-	$(CC) $(CFLAGS) main.c compression.o decompression.o -o lzw
+main : main.c
+	$(CC) $(CFLAGS) main.c 
+
 
 %.o: %.c 
 	$(CC) $(CFLAGS) -c $<

@@ -8,7 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "structure_dico.h"
+#include "compression.h"
+#include "decompression.h"
 
 int main (int argc, char *argv[])
 {

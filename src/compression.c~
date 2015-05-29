@@ -76,13 +76,7 @@ void Compression (char *nom_entree)
 
 char *Ecrire_Code (Code c, int *bit_restants)
 {
-	int nb_case = c%8, i=0;
-	char chaine [nb_case];
-	while (i < nb_case){
-		chaine[i] = code >> (c%2 - 8);
-	}
+	char chaine [c%8+1];
+	
 	return chaine;
 }
-
-
-
