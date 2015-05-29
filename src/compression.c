@@ -53,24 +53,21 @@ void Compression (char *nom_entree)
 	char wc[100]="\0",w[100]="\0";
 	int code = START;
 
-	Un_noeud* Place;
+	Un_noeud* Place_courant, *New_place;
+	c=getchar();
 	while (!feof(f_entree))
 	{
-			c=getchar();
-			strcat(wc,c);
+			Place_courant = dico.racine;
+			New_place = Est_Dans_Dico (c,Place_courant);
+			while ( New_place != Place_courant){
+				c=getchar();
+				Place_courant = New_place;
+				New_place = Est_Dans_Dico (c,Place_courant);
+			}
+			Ajouter_Noeud_Dico (code,c,Place_courant);/*Ajoute le Noeud qu'il soit Fils ou Frere*/
+			code ++;
+			fprintf(f_sortie,"%s",w);
 			
-			Place=Est_Dans_Dico (wc, dico);/*Retourne null si présent dans le dico*/
-			if(Place==NULL)
-			{
-				strcpy(w,wc);
-			}
-			else
-			{
-				Ajouter_Noeud_Dico (dico,code,c,Place);/*Ajoute le Noeud qu'il soit Fils ou Frere*/
-				code ++;
-				fprintf(f_sortie,"%s",w);
-				strcpy(w,c);
-			}
 	}
 	fprintf(f_sortie,"%s",w);
 	

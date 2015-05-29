@@ -58,45 +58,30 @@ Dictionnaire Init (void)
 	return d;
 }
 
-
-un_noeud* Est_Dans_Dico (char *wc, Dictionnaire d,int *fils_ou_frere)
+/* si renvoit de temp il a trouve le caractere il faut donc regarder le caractere suivant sinon on doit rajouter ce caractere dans le dico*/
+un_noeud* Est_Dans_Dico (char wc, noeud* AC)
 {
-	un_noeud *AC=d.racine;
 	int i=0, taille = strlen(wc)-1,dernier=0;
+	noeud* temp =NULL;
+	temp = AC;
+	temp = temp -> fils;
 	
-	while (i != taille)
+	while(temp->frere != NULL && temp->car != wc)
 	{
-		while(AC->frere != NULL && AC->car != wc[i])
-		{
-			AC=AC->frere;
-		}
-
-		if(AC->fils != NULL  && AC->car == wc[i])
-		{
-			AC=AC->fils;
-		}
-		else
-		{
-			break;
-		}
-		
-		i++;
+		temp=temp->frere;
 	}
+
 	
-	if(AC->car==wc[i-1])/*Si on l'a trouvé, on renvoit null*/
-		AC=NULL;
-	
-	else if (i==taille && AC->car==wc[i-1])  
-		*fils_ou_frere=1;/*Fils = 0 ---- Frere = 1*/
-	else
-		*fils_ou_frere=0;
-	
-	return AC;
+	if (temp->car != wc){
+		return AC;
+	}
+	else {
+		return temp;
+	}
 }
 
-/*UN SEUL ET UNIQUE PERE !!!!*/
 
-void Ajouter_Noeud_Dico (Code code,char c,un_noeud* Place,int fils_ou_frere)
+void Ajouter_Noeud_Dico (Code code,char c,un_noeud* Place)
 {
 	un_noeud *newN = malloc(sizeof(un_noeud));
 	if (newN==NULL)
@@ -106,23 +91,13 @@ void Ajouter_Noeud_Dico (Code code,char c,un_noeud* Place,int fils_ou_frere)
 	}
 	newN -> code = code ;
 	newN -> car = (Caractere) c ;	
-	newN -> frere = NULL ;
+	newN -> frere = Place -> fils;
 	newN -> fils =  NULL ;
 
-	if(fils_ou_frere==0)/*Si le fils est nul c'est qu'on doit ajouter un fils*/
-	{
-		newN -> pere = Place ;
-		Place -> fils =  newN ;
-		printf("\n%c",Place->fils->car);
-		printf("\n 11111");
-	}
-	else
-	{
-		newN -> pere = Place->pere;
-		Place -> frere = newN ; 
-		printf("\n 222222");
-	}
-	
+	newN -> pere = Place ;
+	Place -> fils =  newN ;
+	printf("\n%c",Place->fils->car);
+	printf("\n 11111");
 }
 
 /*
