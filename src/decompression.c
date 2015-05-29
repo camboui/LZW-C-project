@@ -52,11 +52,11 @@ void Decompression (char *nom_fichier){
 	un_noeud lettre;
 	char decode; 
 	int i,j,bit_restant,fin_decomp,nb_bit;
-	nb_bit = 9;
+	nb_bit_code = 9;
 	fin_decomp = 0;
 	while (fin_decomp != 1){
 		/*get_code permet de recuperer le code du prochain caractere a decoder et utilise les bit en trop du code precedent*/
-		code = get_code(*dico,*f_entree,*bit_restant,nb_bit,tab_code);
+		code = get_code(*dico,*f_entree,*bit_restant,nb_bit_code,tab_code);
 
 		/*switch pour differencier les 3 codes rajoutés à la main*/
 		switch(code){
@@ -66,11 +66,11 @@ void Decompression (char *nom_fichier){
 				break;
 			/*Separateur bit*/
 			case 257 : 
-				nb_bit++;
-				*tab_code_re = realloc(*tab_code,pow(2,nb_bit)*sizeof(*noeud));
+				nb_bit_code++;
+				*tab_code_re = realloc(*tab_code,pow(2,nb_bit_code)*sizeof(*noeud));
 				if (tab_code_re != NULL){
 					tab_code = tab_code_re;
-					Init_tab (tab_code,pow(2,nb_bit));
+					Init_tab (tab_code,pow(2,nb_bit_code));
 				}
 				else {
 					printf("Problème mémoire, cause -> realloc");

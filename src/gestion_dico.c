@@ -15,7 +15,7 @@ FONCTIONS A AJOUTER :
 	
 	get_code permet de recuperer le code du prochain caractere a decoder et utilise les bit en trop du code precedent
 	Il rajoutera aussi les nouveaux codes
-	code = get_code(*f_entree,*bit_restant,nb_bit, *tab_code);
+	code = get_code(*f_entree,*bit_restant,nb_bit_code, *tab_code);
 */
 
 #include <stdio.h>
@@ -117,7 +117,7 @@ Caractere get_first_letter(un_noeud *node)
     return AC -> car;
 }
 
-Code Recherche_code (int *bit_restant, int *nb_bit_restant, int nb_bit, char *chaine){
+Code Recherche_code (int *bit_restant, int *nb_bit_restant, int nb_bit_code, char *chaine){
 
 	Code code, temp;
 	char c;
@@ -125,7 +125,7 @@ Code Recherche_code (int *bit_restant, int *nb_bit_restant, int nb_bit, char *ch
 	
 	/*Recherche de code*/
 	code = *bit_restant;
-	rest_bit = nb_bit-(*nb_bit_restant);
+	rest_bit = nb_bit_code-(*nb_bit_restant);
 	code = code_first << (rest_bit);
 	
 	/*permet de remplir le temp si on a des grosses longueur de bit>8*/
@@ -146,7 +146,7 @@ Code Recherche_code (int *bit_restant, int *nb_bit_restant, int nb_bit, char *ch
 	}
 	else {
 		c=chaine[nb_case-1];
-		*nb_bit_restant = nb_bit-rest_bit;
+		*nb_bit_restant = nb_bit_code-rest_bit;
 		c = c >> (*nb_bit_restant);
 		temp = temp | c;
 		code = code_first | temp;
@@ -201,9 +201,17 @@ void Ajout_Dico_Decomp (Code code_second,un_noeud **tab_code,un_noeud *new_noeud
 }
 
 
-Code get_code(Dictionnaire d, FILE *f, int *bit_restant, int *nb_bit_restant, int nb_bit, un_noeud* *tab_code){
+Code get_code(Dictionnaire d, FILE *f, int *bit_restant, int *nb_bit_restant, int nb_bit_code, un_noeud* *tab_code){
 
-	int nb_case = nb_bit%8+1;
+	int nb_case;
+	
+	if(nb_bit_code%8 == 0){
+		nb_case = nb_bit_code/8;
+	}
+	else {
+		nb_case = nb_bit_code/8 +1;
+	}
+	
 	char first_c[nb_case];
 	char second_c[nb_case];
 	Code code_first, code_second, temp;
@@ -218,10 +226,10 @@ Code get_code(Dictionnaire d, FILE *f, int *bit_restant, int *nb_bit_restant, in
 		second_c[i] = fgetc(f);
 	}
 	
-	code_first = Recherche_code (*bit_restant,*nb_bit_restant,nb_bit,first_c);
+	code_first = Recherche_code (*bit_restant,*nb_bit_restant,nb_bit_code,first_c);
 	bit_restant_second = *bit_restant;
 	rest_bit = *nb_bit_restant;
-	code_second = Recherche_code (&bit_restant_second,&rest_bit,nb_bit,second_c);
+	code_second = Recherche_code (&bit_restant_second,&rest_bit,nb_bit_code,second_c);
 	
 	
 	/*Cas si le code_first est un mot*/
