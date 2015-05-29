@@ -29,7 +29,7 @@ void Ecrire_Code (FILE *f, Code code, char *bit_restants,int *nb_bit_restant, in
 
 	if (*nb_bit_restant != 0){
 		
-		chaine[i] = ((code >> (nb_bit_code - (nb_case-i)*8) + *nb_bit_restant) + *bit_restants);
+		chaine[i] = ((code >> (nb_bit_code - (nb_case-i)*8 + (*nb_bit_restant))) + *bit_restants);
 		nb= 255;
 		nb = nb << (nb_bit_code - 8 + *nb_bit_restant);
 		nb = ~nb;
@@ -85,7 +85,7 @@ void Compression (char *nom_entree)
 	
 	
 	char c;
-	int code = START;
+	Code code = START;
 	int nb_bit_code = 9;
 	char bit_restants = 0;
 	int nb_bit_restant = 0;
@@ -103,25 +103,15 @@ void Compression (char *nom_entree)
 			}
 			Ajouter_Noeud_Dico (code,c,Place_courant);/*Ajoute le Noeud qu'il soit Fils ou Frere*/
 			code ++;
-			if (code => pow(2,nb_bit_code)){
+			if (code >= pow(2,nb_bit_code)){
+			
 				nb_bit_code++;
 			}
-			Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code)
+			Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code);
 	}
-	fprintf(f_sortie,"%s",c);
 	
 	fclose(f_entree);
 	fclose(f_sortie);
-}
-
-char *Ecrire_Code (Code c, int *bit_restants)
-{
-	int nb_case = c%8, i=0;
-	char chaine [nb_case];
-	while (i < nb_case){
-		chaine[i] = code >> (c%2 - 8);
-	}
-	return chaine;
 }
 
 
