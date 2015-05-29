@@ -116,10 +116,11 @@ Caractere get_first_letter(un_noeud *node)
     return AC -> car;
 }
 
-Code Recherche_code (int *bit_restant, int *nb_bit_restant, int nb_bit_code, char *chaine){
+Code Recherche_code (int *bit_restant, int *nb_bit_restant, int nb_bit_code, int *chaine){
 
-	Code res =0;
+	unsigned int res =0;
 	int i = 0, alire =0;
+	char c;
 	
 	alire = nb_bit_code - *nb_bit_restant;
 	
@@ -128,7 +129,6 @@ Code Recherche_code (int *bit_restant, int *nb_bit_restant, int nb_bit_code, cha
 	while (alire>0){
 		*bit_restant = chaine[i];
 		i++;
-		
 		if(alire>=8){
 			alire-=8;
 			res = res | (*bit_restant << alire);
@@ -138,15 +138,18 @@ Code Recherche_code (int *bit_restant, int *nb_bit_restant, int nb_bit_code, cha
 		else {
 			*nb_bit_restant = 8 - alire;
 			res = res | (*bit_restant >> (8-alire));
-			*bit_restant = (*bit_restant << alire);
-			*bit_restant = (*bit_restant >> alire);
+			c=*bit_restant;
+			c = (c << alire);
+			*bit_restant = (c >> alire);
+			if (*bit_restant < 0){
+				*bit_restant = -*bit_restant;
+			}
 			alire =0;
-			printf("\n -------res : %u ----------",res);
 		}
+		
 	}
 	
 	return res;
-
 
 }
 
@@ -194,7 +197,7 @@ void Ajout_Dico_Decomp (Code code_second,un_noeud **tab_code,un_noeud *new_noeud
 
 }
 
-void Affichage (char *ch, int nb_case){
+void Affichage (int *ch, int nb_case){
 	int i;
 	for(i=0; i<nb_case; i++){
 		printf("%i ",ch[i]);
@@ -207,20 +210,28 @@ Code get_code(Dictionnaire d, FILE *f, int *bit_restant, int *nb_bit_restant, in
 
 	int nb_case, nb_case_sec;
 
-	if(nb_bit_code%8 == 0){
+	if(nb_bit_code%8 == 0 || *nb_bit_restant == 1){
 		nb_case = nb_bit_code/8;
 	}
 	else {
 		nb_case = (nb_bit_code - *nb_bit_restant)/8 +1;
 	}
-	if (nb_case != 1){
+	
+	
+	if (*nb_bit_restant == 1){
+		nb_case_sec = nb_case+1;
+	}
+	else if (nb_case != 1){
 		nb_case_sec = nb_case-1;
 	}
-	else {
+	else{
 		nb_case_sec = nb_case;
 	}
-	char first_c[nb_case];
-	char second_c[nb_case_sec];
+	
+	
+	
+	int first_c[nb_case];
+	int second_c[nb_case_sec];
 	Code code_first, code_second;
 	int bit_restant_second,rest_bit,i;
 	un_noeud* new_noeud, *noeud_courant;
@@ -238,12 +249,7 @@ Code get_code(Dictionnaire d, FILE *f, int *bit_restant, int *nb_bit_restant, in
 	bit_restant_second = *bit_restant;
 	rest_bit = *nb_bit_restant;
 	code_second = Recherche_code (&bit_restant_second,&rest_bit,nb_bit_code,second_c);
-	printf("\nchaine first : ");
-	Affichage(first_c,nb_case);
-	printf("\nchaine second : ");
-	Affichage(second_c,nb_case_sec);
-	printf("\ncode_first : %i, code_sec : %i, bits rest : %i, nb bit : %i, 2br : %i, nb2br : %i\n",code_first,code_second,*bit_restant,*nb_bit_restant,bit_restant_second,rest_bit);
-	
+
 	
 	/*Cas si le code_first est un mot*/
 	if(code_first>258){
@@ -269,12 +275,8 @@ Code get_code(Dictionnaire d, FILE *f, int *bit_restant, int *nb_bit_restant, in
 		Ajout_Dico_Decomp (code_second,tab_code,new_noeud,noeud_courant);
 	}
 	
-	if (nb_case == 1){
-		fseek(f,-nb_case, SEEK_CUR);
-	}
-	else {
-		fseek(f,-nb_case+1, SEEK_CUR);
-	}
+	fseek(f,-nb_case_sec, SEEK_CUR);
+
 	
 	return code_first;
 }
