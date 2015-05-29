@@ -57,6 +57,7 @@ void Ecrire_Code (FILE *f, Code code, char *bit_restants,int *nb_bit_restant, in
 
 void Compression (char *nom_entree)
 {
+
 	Dictionnaire dico;
 	dico = Init ();
 	if (dico.racine == NULL)
@@ -82,7 +83,7 @@ void Compression (char *nom_entree)
 		fprintf (stderr,"Echec de l'ouverture de f_sortie en écriture\n");
 		exit (EXIT_FAILURE);
 	}
-	
+
 	
 	char c;
 	Code code = START;
@@ -91,25 +92,33 @@ void Compression (char *nom_entree)
 	int nb_bit_restant = 0;
 
 	un_noeud* Place_courant, *New_place;
-	c=getchar();
+	
+	c=fgetc(f_entree);
+
 	while (!feof(f_entree))
 	{
+	
 			Place_courant = dico.racine;
+			
 			New_place = Est_Dans_Dico (c,Place_courant);
+			
 			while ( New_place != Place_courant){
-				c=getchar();
+				c=fgetc(f_entree);
 				Place_courant = New_place;
 				New_place = Est_Dans_Dico (c,Place_courant);
 			}
+			
 			Ajouter_Noeud_Dico (code,c,Place_courant);/*Ajoute le Noeud qu'il soit Fils ou Frere*/
 			code ++;
 			if (code >= pow(2,nb_bit_code)){
 			
 				nb_bit_code++;
+				Ecrire_Code (f_sortie,257,&bit_restants,&nb_bit_restant,nb_bit_code);
 			}
 			Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code);
+			
 	}
-	
+	Ecrire_Code (f_sortie,256,&bit_restants,&nb_bit_restant,nb_bit_code);
 	fclose(f_entree);
 	fclose(f_sortie);
 }

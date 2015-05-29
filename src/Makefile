@@ -2,20 +2,22 @@
 #	David BUI
 #	Yohann MATTEO
 #	Mathias BRANGER
+# 	Florian PIERRE-LOUIS
 
 CC = gcc
 SRCS = main.c compression.c decompression.c gestion_dico.c
 OBJS = $(SRCS:.c=.o)
 CFLAGS = -W -Wall -g -I ../include
 
-EXEC = main
+EXEC = lzw
 
-lzw : main.c compression.o decompression.o
-	$(CC) $(CFLAGS) main.c compression.o decompression.o -o lzw
+all: $(EXEC)
 
-%.o: %.c 
-	$(CC) $(CFLAGS) -c $<
+lzw : $(OBJS)
+	$(CC) $(CFLAGS) $^ -o lzw -lm
 
+
+%.o : %.c %.h
 
 clean :
 	 rm -f $(OBJS) *~ $(EXEC)
