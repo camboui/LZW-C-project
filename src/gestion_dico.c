@@ -221,7 +221,7 @@ void Ajout_Dico_Decomp (Code code_second,*noeud *tab_code,un_noeud *new_noeud,un
 
 }
 
-Code get_code(Dictionnaire d, FILE *f, int *bit_restant, int *nb_bit_restant, int nb_bit, *noeud *tab_code){
+Code get_code(Dictionnaire d, FILE *f, int *bit_restant, int *nb_bit_restant, int nb_bit, noeud* *tab_code){
 
 	int nb_case = nb_bit%8+1;
 	char first_c[nb_case];
