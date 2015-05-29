@@ -18,7 +18,42 @@ FONCTIONS NECESSAIRES :
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "gestion_dico.h"
+
+void Ecrire_Code (FILE *f, Code code, char *bit_restants,int *nb_bit_restant, int nb_bit_code)
+{
+	int nb_case = (nb_bit_code+*nb_bit_restant)/8, i=0;
+	uint8_t chaine [nb_case];
+	int nb; int temp = nb_bit_code;
+
+	if (*nb_bit_restant != 0){
+		
+		chaine[i] = ((code >> (nb_bit_code - (nb_case-i)*8) + *nb_bit_restant) + *bit_restants);
+		nb= 255;
+		nb = nb << (nb_bit_code - 8 + *nb_bit_restant);
+		nb = ~nb;
+		code = nb & code;
+		temp = temp - 8 + *nb_bit_restant;
+		i++;
+		
+	}
+	while (i < nb_case){
+		chaine[i] = code >> (nb_bit_code - ((nb_case-i)*8));
+		nb= 255;
+		nb = nb << (nb_bit_code - 8);
+		nb = ~nb;
+		code = nb & code;
+		temp = temp - 8;
+		i++;
+	}
+	*nb_bit_restant = temp;
+	/*Les bits restants sont mis à gauche*/
+	*bit_restants = code << (8 - temp);
+	for (i=0; i<nb_case; i++){
+		fprintf(f,"%c",chaine[i]);
+	}
+}
 
 void Compression (char *nom_entree)
 {
@@ -51,6 +86,9 @@ void Compression (char *nom_entree)
 	
 	char c;
 	int code = START;
+	int nb_bit_code = 9;
+	char bit_restants = 0;
+	int nb_bit_restant = 0;
 
 	un_noeud* Place_courant, *New_place;
 	c=getchar();
@@ -65,8 +103,10 @@ void Compression (char *nom_entree)
 			}
 			Ajouter_Noeud_Dico (code,c,Place_courant);/*Ajoute le Noeud qu'il soit Fils ou Frere*/
 			code ++;
-			fprintf(f_sortie,"%s",c);
-			
+			if (code => pow(2,nb_bit_code)){
+				nb_bit_code++;
+			}
+			Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code)
 	}
 	fprintf(f_sortie,"%s",c);
 	
