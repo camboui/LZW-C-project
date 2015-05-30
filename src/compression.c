@@ -21,38 +21,33 @@ FONCTIONS NECESSAIRES :
 #include <math.h>
 #include "gestion_dico.h"
 
-void Ecrire_Code (FILE *f, Code code, char *bit_restants,int *nb_bit_restant, int nb_bit_code)
+void Ecrire_Code (FILE *f, Code code, char *bit_restant,int *nb_bit_restant, int nb_bit_code)
 {
-	int nb_case = (nb_bit_code+*nb_bit_restant)/8, i=0;
-	uint8_t chaine [nb_case];
-	int nb; int temp = nb_bit_code;
+	char res=0;
+	
+	int  alire =0,place_res=8;
+	
 
-	if (*nb_bit_restant != 0){
-		
-		chaine[i] = ((code >> (nb_bit_code - (nb_case-i)*8 + (*nb_bit_restant))) + *bit_restants);
-		nb= 255;
-		nb = nb << (nb_bit_code - 8 + *nb_bit_restant);
-		nb = ~nb;
-		code = nb & code;
-		temp = temp - 8 + *nb_bit_restant;
-		i++;
-		
+	place_res-= *nb_bit_restant; 
+	res = *bit_restant << place_res; /* On récupère les bits du buffer et on fait pour les bits restants (pris dans code) */
+	
+	alire = nb_bit_code - place_res;
+	res = res | (code >>alire);/* Notre premier mot fait 8 bits, on peut ensuite prendre des blocs de 8 bits */
+	fprintf(f,"%c",res);
+	printf("\n%i",res);
+
+	while (alire>=8)
+	{
+			res = 0;
+			res = code >> (alire - 8);
+			fprintf(f,"%c",res);
+			printf("\n%i",res);
+			alire-=8;
 	}
-	while (i < nb_case){
-		chaine[i] = code >> (nb_bit_code - ((nb_case-i)*8));
-		nb= 255;
-		nb = nb << (nb_bit_code - 8);
-		nb = ~nb;
-		code = nb & code;
-		temp = temp - 8;
-		i++;
-	}
-	*nb_bit_restant = temp;
-	/*Les bits restants sont mis à gauche*/
-	*bit_restants = code << (8 - temp);
-	for (i=0; i<nb_case; i++){
-		fprintf(f,"%c",chaine[i]);
-	}
+	*nb_bit_restant=alire;
+	*bit_restant=code << (nb_bit_code-*nb_bit_restant);/*supprimer toutes les bits inutiles à gauche du code*/
+	*bit_restant=code >> (nb_bit_code-*nb_bit_restant);/*On remet la valeur à sa place*/
+
 }
 
 void Compression (char *nom_entree)
@@ -118,6 +113,7 @@ void Compression (char *nom_entree)
 			Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code);
 			
 	}
+	Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code);
 	Ecrire_Code (f_sortie,256,&bit_restants,&nb_bit_restant,nb_bit_code);
 	fclose(f_entree);
 	fclose(f_sortie);
