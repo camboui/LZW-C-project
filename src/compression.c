@@ -58,7 +58,6 @@ void Ecrire_Code (FILE *f, Code code, char *bit_restant,int *nb_bit_restant, int
 			res = 0;
 			res = code >> (alire - 8);
 			fprintf(f,"%c",res);
-			printf("\n%i",res);
 			alire-=8;
 	}
 	*nb_bit_restant=alire;
@@ -66,36 +65,33 @@ void Ecrire_Code (FILE *f, Code code, char *bit_restant,int *nb_bit_restant, int
 	c =c << (8-*nb_bit_restant);/*supprimer toutes les bits inutiles à gauche du code*/
 	c= c >> (8-*nb_bit_restant);/*On remet la valeur à sa place*/
 	*bit_restant = c;
-	printf("\n%i",res);
 
 }
 
 
-void Affichage_dico (un_noeud* d){
+void Affichage_dico (un_noeud* d, int etage){
 
-	un_noeud* AC,*AF, *AFF; 
+	un_noeud* AC,*AF; 
 	AC = d;
 	
-	while (AC -> frere != NULL ){
-		printf("--%c--", AC -> code);
+	while (AC  != NULL ){
+	printf("\nFRERE");
+		printf("--%i-- ETAGE : %i", AC -> code,etage);
 		AF = AC -> fils;
+		
 	
 		while(AF != NULL){
-			printf("-%c-", AF -> car);
-			AFF = AF -> fils;
-			while(AFF != NULL){
-				printf(")%c(", AFF -> car);
-				AFF = AFF -> frere;
-			}
+		etage++;
+			printf("\nFILS");
+			printf(")%i(", AF -> code);
+			printf("\n");
+			Affichage_dico (AF,etage);
 			AF = AF -> frere;
-		}
-		printf("\n");
+
+		}	
 		AC = AC -> frere;
-	
+
 	}
-
-
-
 }
 
 
@@ -145,13 +141,14 @@ void Compression (char *nom_entree)
 			
 			New_place = Est_Dans_Dico (c,Place_courant,dico);
 
-			while ( New_place -> car != Place_courant -> car && New_place -> code != Place_courant -> code ){
+			while ( New_place != Place_courant ){
 				c=(unsigned char)fgetc(f_entree);
 				Place_courant = New_place;
 				New_place = Est_Dans_Dico (c,Place_courant,dico);
 			}
-			
+
 			Ajouter_Noeud_Dico (code,c,Place_courant);/*Ajoute le Noeud qu'il soit Fils ou Frere*/
+			
 			code ++;
 			if (code >= pow(2,nb_bit_code)){
 			
@@ -164,7 +161,7 @@ void Compression (char *nom_entree)
 	//Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code);
 	Ecrire_Code (f_sortie,256,&bit_restants,&nb_bit_restant,nb_bit_code);
 	printf("\n-----------------------------------------");
-	//Affichage_dico (dico.racine);
+	Affichage_dico (dico.racine,0);
 	fprintf(f_sortie,"%c",(char)0);
 	fclose(f_entree);
 	fclose(f_sortie);

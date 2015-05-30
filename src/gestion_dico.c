@@ -104,6 +104,7 @@ void Ajouter_Noeud_Dico (Code code,char c,un_noeud* Place)
 
 	newN -> pere = Place ;
 	Place -> fils =  newN ;
+			
 }
 
 
