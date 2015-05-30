@@ -144,14 +144,11 @@ void Compression (char *nom_entree)
 			Place_courant = dico.racine;
 			
 			New_place = Est_Dans_Dico (c,Place_courant,dico);
-			//printf("\navt)))))))))))%c((((((((((",c);
+
 			while ( New_place -> car != Place_courant -> car && New_place -> code != Place_courant -> code ){
 				c=(unsigned char)fgetc(f_entree);
-				//printf("\napr1)))))))))))%i(((((((((())))))))%i(((((((((",New_place -> car,c);
 				Place_courant = New_place;
-				//printf("\napr2)))))))))))%i(((((((((())))))))%i(((((((((",New_place -> car,Place_courant -> car);
 				New_place = Est_Dans_Dico (c,Place_courant,dico);
-				//printf("\napr2)))))))))))%i(((((((((())))))))%i(((((((((",New_place -> car,Place_courant -> car);
 			}
 			
 			Ajouter_Noeud_Dico (code,c,Place_courant);/*Ajoute le Noeud qu'il soit Fils ou Frere*/
