@@ -12,7 +12,7 @@
 #include <stdint.h>
 #define START 259
 
-typedef uint8_t Caractere;
+typedef unsigned char Caractere;
 typedef uint32_t Code;
 
 /*Un noeud est défini par 2 variables et 3 pointeurs de noeud*/

@@ -59,27 +59,34 @@ Dictionnaire Init (void)
 }
 
 /* si renvoit de temp il a trouve le caractere il faut donc regarder le caractere suivant sinon on doit rajouter ce caractere dans le dico*/
-un_noeud* Est_Dans_Dico (char wc, un_noeud* AC)
+un_noeud* Est_Dans_Dico (unsigned char wc, un_noeud* AC, Dictionnaire d)
 {
 	un_noeud* temp =NULL;
 	temp = AC;
-	if(temp->fils !=NULL)
+	int cpt=0;
+	if(temp != d.racine){
 		temp = temp -> fils;
-	
-	
-	
-	while(temp->frere != NULL && temp->car != wc)
-	{
-		temp=temp->frere;
 	}
 	
-	if (temp->car != wc){
-		return AC;
+	if (temp != NULL) {
+		while(temp->frere != NULL && temp->car != wc)
+		{
+			cpt++;
+			temp=temp->frere;
+		}
+	
+		if (temp->car != wc){
+			return AC;
+		}
+		else {
+			return temp;
+		}
 	}
 	else {
-		return temp;
+		return AC;
 	}
 }
+
 
 
 void Ajouter_Noeud_Dico (Code code,char c,un_noeud* Place)

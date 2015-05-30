@@ -23,32 +23,63 @@ FONCTIONS NECESSAIRES :
 
 void Ecrire_Code (FILE *f, Code code, char *bit_restant,int *nb_bit_restant, int nb_bit_code)
 {
-	char res=0;
+	unsigned char res=0;
+	char c;
 	
 	int  alire =0,place_res=8;
 	
-
+	//printf("\n--------%i---------%i--------",*bit_restant,*nb_bit_restant);
 	place_res-= *nb_bit_restant; 
 	res = *bit_restant << place_res; /* On récupère les bits du buffer et on fait pour les bits restants (pris dans code) */
 	
 	alire = nb_bit_code - place_res;
 	res = res | (code >>alire);/* Notre premier mot fait 8 bits, on peut ensuite prendre des blocs de 8 bits */
 	fprintf(f,"%c",res);
-	printf("\n%i",res);
+	//printf("\n%i",res);
 
 	while (alire>=8)
 	{
 			res = 0;
 			res = code >> (alire - 8);
 			fprintf(f,"%c",res);
-			printf("\n%i",res);
+			//printf("\n%d",res);
 			alire-=8;
 	}
 	*nb_bit_restant=alire;
-	*bit_restant=code << (nb_bit_code-*nb_bit_restant);/*supprimer toutes les bits inutiles à gauche du code*/
-	*bit_restant=code >> (nb_bit_code-*nb_bit_restant);/*On remet la valeur à sa place*/
+	c= code;
+	c =c << (nb_bit_code-*nb_bit_restant);/*supprimer toutes les bits inutiles à gauche du code*/
+	*bit_restant= c >> (nb_bit_code-*nb_bit_restant);/*On remet la valeur à sa place*/
 
 }
+
+
+void Affichage_dico (un_noeud* d){
+
+	un_noeud* AC,*AF, *AFF; 
+	AC = d;
+	
+	while (AC -> frere != NULL ){
+		printf("--%c--", AC -> code);
+		AF = AC -> fils;
+	
+		while(AF != NULL){
+			printf("-%c-", AF -> car);
+			AFF = AF -> fils;
+			while(AFF != NULL){
+				printf(")%c(", AFF -> car);
+				AFF = AFF -> frere;
+			}
+			AF = AF -> frere;
+		}
+		printf("\n");
+		AC = AC -> frere;
+	
+	}
+
+
+
+}
+
 
 void Compression (char *nom_entree)
 {
@@ -80,7 +111,7 @@ void Compression (char *nom_entree)
 	}
 
 	
-	char c;
+	unsigned char c;
 	Code code = START;
 	int nb_bit_code = 9;
 	char bit_restants = 0;
@@ -88,19 +119,21 @@ void Compression (char *nom_entree)
 
 	un_noeud* Place_courant, *New_place;
 	
-	c=fgetc(f_entree);
-
+	c=(unsigned char)fgetc(f_entree);
 	while (!feof(f_entree))
 	{
 	
 			Place_courant = dico.racine;
 			
-			New_place = Est_Dans_Dico (c,Place_courant);
-			
-			while ( New_place != Place_courant){
-				c=fgetc(f_entree);
+			New_place = Est_Dans_Dico (c,Place_courant,dico);
+			//printf("\navt)))))))))))%c((((((((((",c);
+			while ( New_place -> car != Place_courant -> car && New_place -> code != Place_courant -> code ){
+				c=(unsigned char)fgetc(f_entree);
+				//printf("\napr1)))))))))))%i(((((((((())))))))%i(((((((((",New_place -> car,c);
 				Place_courant = New_place;
-				New_place = Est_Dans_Dico (c,Place_courant);
+				//printf("\napr2)))))))))))%i(((((((((())))))))%i(((((((((",New_place -> car,Place_courant -> car);
+				New_place = Est_Dans_Dico (c,Place_courant,dico);
+				//printf("\napr2)))))))))))%i(((((((((())))))))%i(((((((((",New_place -> car,Place_courant -> car);
 			}
 			
 			Ajouter_Noeud_Dico (code,c,Place_courant);/*Ajoute le Noeud qu'il soit Fils ou Frere*/
@@ -112,9 +145,13 @@ void Compression (char *nom_entree)
 			}
 			Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code);
 			
+			
 	}
 	Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code);
 	Ecrire_Code (f_sortie,256,&bit_restants,&nb_bit_restant,nb_bit_code);
+	printf("-----------------------------------------");
+	Affichage_dico (dico.racine);
+	fprintf(f_entree,"%c",(char)0);
 	fclose(f_entree);
 	fclose(f_sortie);
 }

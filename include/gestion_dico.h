@@ -12,7 +12,7 @@
 Dictionnaire Init (void);
 
 /* si renvoit de temp il a trouve le caractere il faut donc regarder le caractere suivant sinon on doit rajouter ce caractere dans le dico*/
-un_noeud* Est_Dans_Dico (char wc, un_noeud* AC);
+un_noeud* Est_Dans_Dico (char wc, un_noeud* AC, Dictionnaire d);
 
 
 void Ajouter_Noeud_Dico (Code code,char c,un_noeud* Place);
