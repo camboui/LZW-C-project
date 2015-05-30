@@ -165,7 +165,7 @@ void Compression (char *nom_entree)
 	Ecrire_Code (f_sortie,256,&bit_restants,&nb_bit_restant,nb_bit_code);
 	printf("\n-----------------------------------------");
 	//Affichage_dico (dico.racine);
-	fprintf(f_entree,"%c",(char)0);
+	fprintf(f_sortie,"%c",(char)0);
 	fclose(f_entree);
 	fclose(f_sortie);
 }
