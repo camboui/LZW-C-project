@@ -21,6 +21,22 @@ FONCTIONS NECESSAIRES :
 #include <math.h>
 #include "gestion_dico.h"
 
+int valeur_bit (int n, int nb)
+{
+	return ((nb&(1<<n)))>>n;
+}
+
+void afficher_val_bit(int nb)
+{
+	int i;
+	printf("\n\n");
+	for ( i=7;i>=0;i--)
+	{
+		printf("%i",valeur_bit(i,nb));
+	}
+	printf("\n\n");
+}
+
 void Ecrire_Code (FILE *f, Code code, char *bit_restant,int *nb_bit_restant, int nb_bit_code)
 {
 	unsigned char res=0;
@@ -28,27 +44,29 @@ void Ecrire_Code (FILE *f, Code code, char *bit_restant,int *nb_bit_restant, int
 	
 	int  alire =0,place_res=8;
 	
-	//printf("\n--------%i---------%i--------",*bit_restant,*nb_bit_restant);
-	place_res-= *nb_bit_restant; 
+	place_res-= *nb_bit_restant;
+	//afficher_val_bit(*bit_restant);
+	//printf("\n---------%i--------%i---------",res, place_res); 
 	res = *bit_restant << place_res; /* On récupère les bits du buffer et on fait pour les bits restants (pris dans code) */
-	
+	//printf("\n!!!!!%i!!!!!",res);
 	alire = nb_bit_code - place_res;
 	res = res | (code >>alire);/* Notre premier mot fait 8 bits, on peut ensuite prendre des blocs de 8 bits */
 	fprintf(f,"%c",res);
-	//printf("\n%i",res);
 
 	while (alire>=8)
 	{
 			res = 0;
 			res = code >> (alire - 8);
 			fprintf(f,"%c",res);
-			//printf("\n%d",res);
+			printf("\n%i",res);
 			alire-=8;
 	}
 	*nb_bit_restant=alire;
-	c= code;
-	c =c << (nb_bit_code-*nb_bit_restant);/*supprimer toutes les bits inutiles à gauche du code*/
-	*bit_restant= c >> (nb_bit_code-*nb_bit_restant);/*On remet la valeur à sa place*/
+	c= (char)code;
+	c =c << (8-*nb_bit_restant);/*supprimer toutes les bits inutiles à gauche du code*/
+	c= c >> (8-*nb_bit_restant);/*On remet la valeur à sa place*/
+	*bit_restant = c;
+	printf("\n%i",res);
 
 }
 
@@ -145,12 +163,11 @@ void Compression (char *nom_entree)
 			}
 			Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code);
 			
-			
 	}
 	Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code);
 	Ecrire_Code (f_sortie,256,&bit_restants,&nb_bit_restant,nb_bit_code);
-	printf("-----------------------------------------");
-	Affichage_dico (dico.racine);
+	printf("\n-----------------------------------------");
+	//Affichage_dico (dico.racine);
 	fprintf(f_entree,"%c",(char)0);
 	fclose(f_entree);
 	fclose(f_sortie);
