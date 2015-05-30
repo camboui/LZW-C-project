@@ -40,6 +40,7 @@ void Decompression (char *nom_fichier){
 	/*Creation d'un tableau d'adresse de noeud*/
 	un_noeud* tab_code[512];
 	lg=0;
+	
 	while (lg<512){
 		tab_code[lg] = NULL;
 		lg++;
@@ -47,13 +48,12 @@ void Decompression (char *nom_fichier){
 	
 	
 	void *tab_code_re;
-	char chaine[100];
+	char *chaine;
 	Code code = 0;
 	un_noeud* lettre;
-	int i,bit_restant=0,fin_decomp,nb_bit_code,nb_bit_restant=0;
+	int bit_restant=0,fin_decomp,nb_bit_code,nb_bit_restant=0;
 	nb_bit_code = 9;
 	fin_decomp = 0;
-	int cpt=0;
 	
 	
 	while (fin_decomp != 1){
@@ -83,29 +83,28 @@ void Decompression (char *nom_fichier){
 			/*Reinit dico*/
 			case 258 : break;
 			default : 
-				i=0;
-				chaine[0]='\0';
-		
 
 				if (code>258){
-					lettre = tab_code[code-259];
+					
+					lettre = tab_code[code-START];
+					
+					lg = nb_pere(lettre);
+					
+					chaine = malloc(lg*sizeof(char));
+					
+					while (lettre != NULL && lg >= 0){
+						chaine[lg]=lettre->car;
+						lg--;
+						lettre = lettre -> pere;
+					}
+					fprintf(f_sortie,"%s",chaine);
+					//free(chaine);
 				}
 				else {
-					chaine[0] = code;
-					chaine[1] = '\0';
-					lettre = NULL;
+					fprintf(f_sortie,"%c",code);
 				}
-				while (lettre != NULL){
-			
-					lg = strlen(chaine);
-					for(i=lg;i>0;i--){
-						chaine[i+1]='\0';
-						chaine[i]=chaine[i-1];
-					}
-					chaine[0]=lettre->car;
-					lettre = lettre -> pere;
-				}
-				fprintf(f_sortie,"%s",chaine);
+				printf("\n%d\n", parcours_tab_code (tab_code));
+				
 				break;
 		}
 	
