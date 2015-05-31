@@ -76,7 +76,7 @@ void Decompression (char *nom_fichier){
 	Code code = 0;
 	un_noeud* lettre;
 	int bit_restant=0,fin_decomp,nb_bit_code,nb_bit_restant=0;
-	nb_bit_code = 10;
+	nb_bit_code = 9;
 	fin_decomp = 0;
 
 	
@@ -105,7 +105,6 @@ void Decompression (char *nom_fichier){
 					exit(EXIT_FAILURE);
 				}
 				printf("\nbit rest : %d\n",nb_bit_restant);
-				exit(0);
 				break;
 			/*Reinit dico*/
 			case 258 : break;

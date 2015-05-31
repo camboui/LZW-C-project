@@ -278,18 +278,27 @@ void Afficher_chaine_de (un_noeud *lettre){
 Code get_code(Dictionnaire d, FILE *f, int *bit_restant, int *nb_bit_restant, int nb_bit_code, un_noeud* *tab_code){
 
 	int nb_case, nb_case_sec;
-
-	if(nb_bit_code%8 == 0 || *nb_bit_restant == 1){
+	
+	
+	if ((nb_bit_code - *nb_bit_restant) <= 8){
+		nb_case = nb_bit_code/8;
+		nb_case_sec = nb_case +1;
+	}
+	else {
+		nb_case = (nb_bit_code - *nb_bit_restant)/8 +1;
+		nb_case_sec = nb_case -1;
+	}
+	/*if(nb_bit_code%8 == 0 || *nb_bit_restant == 1){
 		printf("\ntamere %i\n", *nb_bit_restant);
 		nb_case = nb_bit_code/8;
 	}
 	else {
 		
 		nb_case = (nb_bit_code - *nb_bit_restant)/8 +1;
-	}
+	}*/
 	
 	
-	if (*nb_bit_restant == 1){
+	/*if (*nb_bit_restant == 1){
 		nb_case_sec = nb_case+1;
 	}
 	else if (nb_case != 1){
@@ -297,7 +306,7 @@ Code get_code(Dictionnaire d, FILE *f, int *bit_restant, int *nb_bit_restant, in
 	}
 	else{
 		nb_case_sec = nb_case;
-	}
+	}*/
 	
 	
 	
