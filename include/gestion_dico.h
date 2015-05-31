@@ -32,10 +32,10 @@ Code Recherche_code (int *bit_restant, int *nb_bit_restant, int nb_bit, char *ch
 int parcours_tab_code (un_noeud **tab_code);
 
 
-void Ajout_Dico_Decomp (Code code_second,Code code_first,un_noeud **tab_code,un_noeud *noeud_courant);
+void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Dictionnaire d);
 
 int nb_pere (un_noeud* n);
 
-Code get_code(Dictionnaire d, FILE *f, int *bit_restant, int *nb_bit_restant, int nb_bit, un_noeud**tab_code);
+Code get_code (FILE *f, int *bit_restant, int *nb_bit_restant, int nb_bit_code,int executer_retour);
 
 #endif

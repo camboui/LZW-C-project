@@ -73,23 +73,21 @@ void Decompression (char *nom_fichier){
 	
 	void *tab_code_re;
 	char *chaine;
-	Code code = 0;
+	Code code_actuel=0, code_suivant = 0;
 	un_noeud* lettre;
 	int bit_restant=0,fin_decomp,nb_bit_code,nb_bit_restant=0;
 	nb_bit_code = 9;
 	fin_decomp = 0;
-
+			int cp1,cp2;
 	
 	while (fin_decomp != 1){
 		/*get_code permet de recuperer le code du prochain caractere a decoder et utilise les bit en trop du code precedent*/
 
-		code = get_code(dico,f_entree,&bit_restant,&nb_bit_restant,nb_bit_code,tab_code);
-		printf("\ncode(main) : %i bits rest : %i nb bit : %i\n",code,bit_restant,nb_bit_restant);
-		
-
+		code_actuel  = get_code(f_entree,&bit_restant,&nb_bit_restant,nb_bit_code,0);
+		printf("\n Code actuel : %i",code_actuel);
 		
 		/*switch pour differencier les 3 codes rajoutés à la main*/
-		switch(code){
+		switch(code_actuel){
 			/*fin de fichier*/
 			case 256 :
 				fin_decomp=1; 
@@ -112,10 +110,15 @@ void Decompression (char *nom_fichier){
 			/*Reinit dico*/
 			case 258 : break;
 			default : 
+			cp1=bit_restant;
+			cp2=nb_bit_restant;
 
-				if (code>258){
-					
-					lettre = tab_code[code-START];
+				code_suivant = get_code(f_entree,&cp1,&cp2,nb_bit_code,1);
+							printf("\n Code suivant : %i\n",code_suivant);
+				ajout_dico (code_actuel,code_suivant,tab_code,dico);
+				if (code_actuel>258){
+
+					lettre = tab_code[code_actuel-START];
 					
 					lg = nb_pere(lettre);
 					
@@ -130,7 +133,7 @@ void Decompression (char *nom_fichier){
 					//free(chaine);
 				}
 				else {
-					fprintf(f_sortie,"%c",code);
+					fprintf(f_sortie,"%c",code_actuel);
 				}
 				
 				break;
