@@ -280,9 +280,11 @@ Code get_code(Dictionnaire d, FILE *f, int *bit_restant, int *nb_bit_restant, in
 	int nb_case, nb_case_sec;
 
 	if(nb_bit_code%8 == 0 || *nb_bit_restant == 1){
+		printf("\ntamere %i\n", *nb_bit_restant);
 		nb_case = nb_bit_code/8;
 	}
 	else {
+		
 		nb_case = (nb_bit_code - *nb_bit_restant)/8 +1;
 	}
 	
@@ -333,6 +335,7 @@ Code get_code(Dictionnaire d, FILE *f, int *bit_restant, int *nb_bit_restant, in
 	}
 	/*Cas si le code_first est caractere special*/
 	else if (code_first>=256 && code_first<=258){
+	
 	}
 	/*Cas si le code_first est caractere basique*/
 	else {

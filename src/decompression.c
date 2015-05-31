@@ -10,6 +10,9 @@
 #include <math.h>
 #include "gestion_dico.h"
 
+
+
+
 void Init_tab (un_noeud **tab, int nb_case){
 	
 	int i=0; 
@@ -18,6 +21,7 @@ void Init_tab (un_noeud **tab, int nb_case){
 	}
 	while(i<nb_case){
 		tab[i] = NULL;
+		i++;
 	}
 }
 
@@ -57,7 +61,8 @@ void Decompression (char *nom_fichier){
 	dico = Init();
 	
 	/*Creation d'un tableau d'adresse de noeud*/
-	un_noeud* tab_code[512];
+	un_noeud** tab_code;
+	tab_code = malloc(512*sizeof(un_noeud));
 	lg=0;
 	
 	while (lg<512){
@@ -71,14 +76,14 @@ void Decompression (char *nom_fichier){
 	Code code = 0;
 	un_noeud* lettre;
 	int bit_restant=0,fin_decomp,nb_bit_code,nb_bit_restant=0;
-	nb_bit_code = 9;
+	nb_bit_code = 10;
 	fin_decomp = 0;
-	
+
 	
 	while (fin_decomp != 1){
 		/*get_code permet de recuperer le code du prochain caractere a decoder et utilise les bit en trop du code precedent*/
 		code = get_code(dico,f_entree,&bit_restant,&nb_bit_restant,nb_bit_code,tab_code);
-		//printf("\ncode(main) : %i bits rest : %i nb bit : %i\n",code,bit_restant,nb_bit_restant);
+		printf("\ncode(main) : %i bits rest : %i nb bit : %i\n",code,bit_restant,nb_bit_restant);
 		
 		/*switch pour differencier les 3 codes rajoutés à la main*/
 		switch(code){
@@ -89,6 +94,7 @@ void Decompression (char *nom_fichier){
 			/*Separateur bit*/
 			case 257 : 
 				nb_bit_code++;
+				printf("\nbit rest : %d\n",nb_bit_restant);
 				tab_code_re = realloc(*tab_code,pow(2,nb_bit_code)*sizeof(un_noeud));
 				if (tab_code_re != NULL){
 					*tab_code = tab_code_re;
@@ -98,6 +104,8 @@ void Decompression (char *nom_fichier){
 					printf("Problème mémoire, cause -> realloc");
 					exit(EXIT_FAILURE);
 				}
+				printf("\nbit rest : %d\n",nb_bit_restant);
+				exit(0);
 				break;
 			/*Reinit dico*/
 			case 258 : break;
