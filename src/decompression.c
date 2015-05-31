@@ -82,10 +82,11 @@ void Decompression (char *nom_fichier){
 	
 	while (fin_decomp != 1){
 		/*get_code permet de recuperer le code du prochain caractere a decoder et utilise les bit en trop du code precedent*/
+
 		code = get_code(dico,f_entree,&bit_restant,&nb_bit_restant,nb_bit_code,tab_code);
 		printf("\ncode(main) : %i bits rest : %i nb bit : %i\n",code,bit_restant,nb_bit_restant);
 		
-		
+
 		
 		/*switch pour differencier les 3 codes rajoutés à la main*/
 		switch(code){
@@ -106,7 +107,7 @@ void Decompression (char *nom_fichier){
 					printf("Problème mémoire, cause -> realloc");
 					exit(EXIT_FAILURE);
 				}
-				printf("\nbit rest : %d\n",nb_bit_restant);
+				printf("\nICI");
 				break;
 			/*Reinit dico*/
 			case 258 : break;
@@ -137,6 +138,7 @@ void Decompression (char *nom_fichier){
 		
 	
 	}
+	printf("\n %d -- nb : %i", parcours_tab_code(tab_code),nb_bit_code);
 	
 	fclose(f_sortie);
 	fclose(f_entree);

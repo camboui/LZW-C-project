@@ -174,15 +174,17 @@ int parcours_tab_code (un_noeud **tab_code)
 
 void Ajout_Dico_Decomp (Code code_second,Code code_first,un_noeud **tab_code,un_noeud *noeud_courant){
 	
-	char c;
+	Caractere c;
 	un_noeud *new_noeud;
 	new_noeud = malloc(sizeof(un_noeud));
+		
 	
-	
-	
+		
 	/* Cas si le suivant est un mot*/
 	if(code_second>=START && tab_code[code_second-START]!=NULL){
+	
 		c = get_first_letter(tab_code[code_second-START]);
+		
 		
 		new_noeud -> car = c;
 		new_noeud -> code = START + parcours_tab_code (tab_code);
@@ -192,12 +194,17 @@ void Ajout_Dico_Decomp (Code code_second,Code code_first,un_noeud **tab_code,un_
 		
 		noeud_courant -> fils =new_noeud;
 		tab_code[parcours_tab_code (tab_code)] = new_noeud;
+		
 	}
 	else if (code_second>=START && tab_code[code_second-START]==NULL){
+
+
 		if (code_first >=START){
-			code_first = get_first_letter(tab_code[code_first-START]);
+			c = get_first_letter(tab_code[code_first-START]);
 		}
-		new_noeud -> car = code_first;
+	
+	
+		new_noeud -> car = c;
 		new_noeud -> code = START + parcours_tab_code (tab_code);
 		new_noeud -> pere = noeud_courant;
 		new_noeud -> frere = noeud_courant -> fils;
@@ -302,7 +309,7 @@ Code get_code(Dictionnaire d, FILE *f, int *bit_restant, int *nb_bit_restant, in
 	code_first = Recherche_code (bit_restant,nb_bit_restant,nb_bit_code,first_c);
 	bit_restant_second = *bit_restant;
 	rest_bit = *nb_bit_restant;
-	
+
 	bit_case = (nb_bit_code - *nb_bit_restant);
 	while (bit_case>8){
 		bit_case-=8;
@@ -322,23 +329,29 @@ Code get_code(Dictionnaire d, FILE *f, int *bit_restant, int *nb_bit_restant, in
 	
 	
 	/*Cas si le code_first est un mot*/
-	if(code_first>=START){
-		noeud_courant = tab_code[code_first-START]; 
-		Ajout_Dico_Decomp (code_second,code_first,tab_code,noeud_courant);
-	}
-	/*Cas si le code_first est caractere special*/
-	else if (code_first>=256 && code_first<=258){
+	if(code_second<256 || code_second>258)
+	{
 	
-	}
-	/*Cas si le code_first est caractere basique*/
-	else {
-		/*On cree le nouveau un_noeud et on cherche l'endroit ou l'ajouter par rapport au code_first*/
-		noeud_courant = d.racine; 
-		while(noeud_courant -> frere != NULL && noeud_courant->code != code_first){
-			noeud_courant = noeud_courant -> frere;
+	
+		if(code_first>=START ){
+			noeud_courant = tab_code[code_first-START]; 
+		
+			Ajout_Dico_Decomp (code_second,code_first,tab_code,noeud_courant);
 		}
-		Ajout_Dico_Decomp (code_second,code_first,tab_code,noeud_courant);
+		/*Cas si le code_first est caractere special*/
+		else if (code_first>=256 && code_first<=258){
+	
+		}
+		/*Cas si le code_first est caractere basique*/
+		else {
+			/*On cree le nouveau un_noeud et on cherche l'endroit ou l'ajouter par rapport au code_first*/
+			noeud_courant = d.racine; 
+			while(noeud_courant -> frere != NULL && noeud_courant->code != code_first){
+				noeud_courant = noeud_courant -> frere;
+			}
+			Ajout_Dico_Decomp (code_second,code_first,tab_code,noeud_courant);
 
+		}
 	}
 	/*for (i = 0; i<parcours_tab_code (tab_code);i++){
 		printf("\n%i -> ",START + i);
