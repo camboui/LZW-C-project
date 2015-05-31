@@ -128,11 +128,7 @@ void Decompression (char *nom_fichier){
 		
 	
 	}
-	for (lg = 0; lg<parcours_tab_code (tab_code);lg++){
-		printf("\n%i -> ",START + lg);
-		Afficher_chaine_d(tab_code[lg]);
-	}
-	exit(0);
+	
 	fclose(f_sortie);
 	fclose(f_entree);
 

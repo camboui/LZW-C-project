@@ -52,7 +52,7 @@ void Afficher_chaine (un_noeud *lettre){
 		lettre = lettre -> pere;
 	}
 	printf("-%s-\n",chaine);
-	printf("\n-----%i-----)%i(-----\n",chaine[0],chaine[1]);
+	//printf("\n-----%i-----)%i(-----\n",chaine[0],chaine[1]);
 
 
 }
@@ -73,7 +73,7 @@ void Ecrire_Code (FILE *f, Code code, char *bit_restant,int *nb_bit_restant, int
 	alire = nb_bit_code - place_res;
 	res = res | (code >>alire);/* Notre premier mot fait 8 bits, on peut ensuite prendre des blocs de 8 bits */
 	fprintf(f,"%c",res);
-	
+
 
 	while (alire>=8)
 	{
@@ -83,11 +83,16 @@ void Ecrire_Code (FILE *f, Code code, char *bit_restant,int *nb_bit_restant, int
 			alire-=8;
 	}
 	*nb_bit_restant=alire;
-	c= (char)code;
-	c =c << (8-*nb_bit_restant);/*supprimer toutes les bits inutiles à gauche du code*/
-	c= c >> (8-*nb_bit_restant);/*On remet la valeur à sa place*/
-	*bit_restant = c;
-	printf ("\ncode : %i ------ res : %i\n",code,res);
+	if(alire !=0 ){
+		c= (char)code;
+		c =c << (8-*nb_bit_restant);/*supprimer toutes les bits inutiles à gauche du code*/
+		c= c >> (8-*nb_bit_restant);/*On remet la valeur à sa place*/
+		*bit_restant = c;
+	}
+	else {
+		*bit_restant = 0;
+	}
+	
 }
 
 
@@ -172,13 +177,12 @@ void Compression (char *nom_entree)
 			Ajouter_Noeud_Dico (code,c,Place_courant);/*Ajoute le Noeud qu'il soit Fils ou Frere*/
 			//printf("\n%i -> ",code);
 			//Afficher_chaine(Place_courant->fils);
+			Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code);
 			code ++;
 			if (code >= pow(2,nb_bit_code)){
-			
-				nb_bit_code++;
 				Ecrire_Code (f_sortie,257,&bit_restants,&nb_bit_restant,nb_bit_code);
+				nb_bit_code++;
 			}
-			Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code);
 			
 	}
 	//Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code);
