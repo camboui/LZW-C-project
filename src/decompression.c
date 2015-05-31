@@ -21,6 +21,25 @@ void Init_tab (un_noeud **tab, int nb_case){
 	}
 }
 
+void Afficher_chaine_d (un_noeud *lettre){
+
+	int lg;
+	char* chaine;
+	
+	lg = nb_pere(lettre);
+					
+	chaine = malloc(lg*sizeof(char));
+	
+	while (lettre != NULL && lg >= 0){
+		chaine[lg]=lettre->car;
+		lg--;
+		lettre = lettre -> pere;
+	}
+	printf("-%s-\n",chaine);
+
+
+}
+
 void Decompression (char *nom_fichier){
 	/* Ouverture et creation des fichiers*/
 	
@@ -59,7 +78,7 @@ void Decompression (char *nom_fichier){
 	while (fin_decomp != 1){
 		/*get_code permet de recuperer le code du prochain caractere a decoder et utilise les bit en trop du code precedent*/
 		code = get_code(dico,f_entree,&bit_restant,&nb_bit_restant,nb_bit_code,tab_code);
-		printf("\ncode(main) : %i bits rest : %i nb bit : %i\n",code,bit_restant,nb_bit_restant);
+		//printf("\ncode(main) : %i bits rest : %i nb bit : %i\n",code,bit_restant,nb_bit_restant);
 		
 		/*switch pour differencier les 3 codes rajoutés à la main*/
 		switch(code){
@@ -103,13 +122,17 @@ void Decompression (char *nom_fichier){
 				else {
 					fprintf(f_sortie,"%c",code);
 				}
-				printf("\n%d\n", parcours_tab_code (tab_code));
 				
 				break;
 		}
+		
 	
 	}
-	
+	for (lg = 0; lg<parcours_tab_code (tab_code);lg++){
+		printf("\n%i -> ",START + lg);
+		Afficher_chaine_d(tab_code[lg]);
+	}
+	exit(0);
 	fclose(f_sortie);
 	fclose(f_entree);
 

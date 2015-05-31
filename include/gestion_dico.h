@@ -32,7 +32,7 @@ Code Recherche_code (int *bit_restant, int *nb_bit_restant, int nb_bit, char *ch
 int parcours_tab_code (un_noeud **tab_code);
 
 
-void Ajout_Dico_Decomp (Code code_second,un_noeud **tab_code,un_noeud *noeud_courant);
+void Ajout_Dico_Decomp (Code code_second,Code code_first,un_noeud **tab_code,un_noeud *noeud_courant);
 
 int nb_pere (un_noeud* n);
 
