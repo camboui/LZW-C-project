@@ -85,6 +85,8 @@ void Decompression (char *nom_fichier){
 		code = get_code(dico,f_entree,&bit_restant,&nb_bit_restant,nb_bit_code,tab_code);
 		printf("\ncode(main) : %i bits rest : %i nb bit : %i\n",code,bit_restant,nb_bit_restant);
 		
+		
+		
 		/*switch pour differencier les 3 codes rajoutés à la main*/
 		switch(code){
 			/*fin de fichier*/
