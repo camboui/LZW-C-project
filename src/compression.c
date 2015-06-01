@@ -60,7 +60,7 @@ void Afficher_chaine (un_noeud *lettre){
 
 void Ecrire_Code (FILE *f, Code code, char *bit_restant,int *nb_bit_restant, int nb_bit_code)
 {
-	unsigned char res=0;
+	Caractere res=0;
 	char c;
 	
 	int  alire =0,place_res=8;
