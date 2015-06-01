@@ -30,6 +30,11 @@ Dictionnaire Init (void)
 	Dictionnaire d;
 	d.racine=NULL;
 	d.racine=malloc(sizeof(un_noeud));
+	d.racine->pere=NULL;
+	d.racine->frere=NULL;
+	d.racine->car=0;
+	d.racine->code=0;
+
 	un_noeud*AC=NULL;
 	
 	if (d.racine==NULL)
@@ -38,9 +43,14 @@ Dictionnaire Init (void)
 		exit (EXIT_FAILURE);
 	}
 	
-	AC=d.racine;
+	AC=malloc(sizeof(un_noeud));
+	d.racine->fils=AC;
+	AC=d.racine->fils;
+
+	
 	for(i=0;i<START;i++)
 	{
+
 		AC->code = i;
 		AC->car  = (Caractere) i;
 		AC->pere=NULL;
@@ -54,27 +64,25 @@ Dictionnaire Init (void)
 		AC=AC->frere;
 	}
 	AC->frere=NULL;
-	
 	return d;
 }
 
 /* si renvoit de temp il a trouve le caractere il faut donc regarder le caractere suivant sinon on doit rajouter ce caractere dans le dico*/
-un_noeud* Est_Dans_Dico (unsigned char wc, un_noeud* AC, Dictionnaire d)
+un_noeud* Est_Dans_Dico (Caractere wc, un_noeud* AC)
 {
 	un_noeud* temp =NULL;
 	temp = AC;
 	int cpt=0;
-	if(temp != d.racine){
+
 		temp = temp -> fils;
-	}
+	
 	
 	if (temp != NULL) {
 		while(temp->frere != NULL && temp->car != wc)
 		{
-			cpt++;
 			temp=temp->frere;
+			cpt++;
 		}
-	
 		if (temp->car != wc){
 			return AC;
 		}
@@ -157,7 +165,6 @@ Code Recherche_code (int *bit_restant, int *nb_bit_restant, int nb_bit_code, int
 		}
 		
 	}
-	printf("\n Res : %i",res);
 	return res;
 
 }
@@ -245,7 +252,7 @@ void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Diction
 	un_noeud* new_noeud =NULL;
 	new_noeud  = malloc(sizeof(un_noeud));
 	un_noeud* noeud_actuel=NULL;
-	
+
 
 	if(code_actuel >=START)
 	{
@@ -253,11 +260,15 @@ void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Diction
 	}
 	else
 	{
-			noeud_actuel = d.racine; 
+	
+			noeud_actuel = d.racine->fils; 
+			
 			while(noeud_actuel -> frere != NULL && noeud_actuel->code != code_actuel)
 			{
 				noeud_actuel = noeud_actuel -> frere;
+				
 			}
+			
 	}
 
 	if(code_suivant<START)

@@ -11,6 +11,7 @@
 
 #include <stdint.h>
 #define START 259
+#define MAX_DICO 4096
 
 typedef unsigned char Caractere;
 typedef uint32_t Code;

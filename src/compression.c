@@ -152,26 +152,26 @@ void Compression (char *nom_entree)
 	}
 
 	
-	unsigned char c;
+	Caractere c;
 	Code code = START;
 	int nb_bit_code = 9;
 	char bit_restants = 0;
 	int nb_bit_restant = 0;
-
 	un_noeud* Place_courant, *New_place;
 	
-	c=(unsigned char)fgetc(f_entree);
+	c=(Caractere)fgetc(f_entree);
+
+
 	while (!feof(f_entree))
 	{
-	
 			Place_courant = dico.racine;
-			
-			New_place = Est_Dans_Dico (c,Place_courant,dico);
 
-			while ( New_place != Place_courant ){
-				c=(unsigned char)fgetc(f_entree);
+			New_place = Est_Dans_Dico (c,Place_courant);
+
+			while ( New_place != Place_courant || New_place== dico.racine){
+				c=(Caractere)fgetc(f_entree);
 				Place_courant = New_place;
-				New_place = Est_Dans_Dico (c,Place_courant,dico);
+				New_place = Est_Dans_Dico (c,Place_courant);
 			}
 
 			Ajouter_Noeud_Dico (code,c,Place_courant);/*Ajoute le Noeud qu'il soit Fils ou Frere*/
@@ -180,8 +180,18 @@ void Compression (char *nom_entree)
 			Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code);
 			code ++;
 			if (code >= pow(2,nb_bit_code)){
-				Ecrire_Code (f_sortie,257,&bit_restants,&nb_bit_restant,nb_bit_code);
-				nb_bit_code++;
+				if(code >=MAX_DICO)
+				{
+					Ecrire_Code (f_sortie,258,&bit_restants,&nb_bit_restant,nb_bit_code);
+					nb_bit_code=9;	
+					dico = Init ();
+					code=START;	
+				}
+				else
+				{
+					Ecrire_Code (f_sortie,257,&bit_restants,&nb_bit_restant,nb_bit_code);
+					nb_bit_code++;
+				}
 			}
 			
 	}
@@ -191,7 +201,7 @@ void Compression (char *nom_entree)
 		Ecrire_Code (f_sortie,(char)0,&bit_restants,&nb_bit_restant,nb_bit_code);
 	}
 	printf("\n-----------------------------------------");
-	//Affichage_dico (dico.racine,0);
+	
 	fclose(f_entree);
 	fclose(f_sortie);
 }
