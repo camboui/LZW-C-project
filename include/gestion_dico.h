@@ -15,7 +15,7 @@ Dictionnaire Init (void);
 un_noeud* Est_Dans_Dico (Caractere wc, un_noeud* AC);
 
 
-void Ajouter_Noeud_Dico (Code code,char c,un_noeud* Place);
+void Ajouter_Noeud_Dico (Code code,Caractere c,un_noeud* Place);
 
 void liberer_noeud(un_noeud * AC);
 /*

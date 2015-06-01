@@ -58,10 +58,10 @@ void Afficher_chaine (un_noeud *lettre){
 }
 
 
-void Ecrire_Code (FILE *f, Code code, char *bit_restant,int *nb_bit_restant, int nb_bit_code)
+void Ecrire_Code (FILE *f, Code code, Caractere *bit_restant,int *nb_bit_restant, int nb_bit_code)
 {
 	Caractere res=0;
-	char c;
+	Caractere c;
 	
 	int  alire =0,place_res=8;
 	
@@ -83,8 +83,10 @@ void Ecrire_Code (FILE *f, Code code, char *bit_restant,int *nb_bit_restant, int
 			alire-=8;
 	}
 	*nb_bit_restant=alire;
-	if(alire !=0 ){
-		c= (char)code;
+	if(alire >0 ){
+	*bit_restant =0;
+	
+		c= (Caractere)code;
 		c =c << (8-*nb_bit_restant);/*supprimer toutes les bits inutiles à gauche du code*/
 		c= c >> (8-*nb_bit_restant);/*On remet la valeur à sa place*/
 		*bit_restant = c;
@@ -155,7 +157,7 @@ void Compression (char *nom_entree)
 	Caractere c;
 	Code code = START;
 	int nb_bit_code = 9;
-	char bit_restants = 0;
+	Caractere bit_restants = 0;
 	int nb_bit_restant = 0;
 	un_noeud* Place_courant, *New_place;
 	
@@ -167,7 +169,7 @@ void Compression (char *nom_entree)
 
 			New_place = Est_Dans_Dico (c,Place_courant);
 
-			while ( New_place != Place_courant || New_place== dico.racine){
+			while ( (New_place != Place_courant || New_place== dico.racine )&& !feof(f_entree)){
 				c=(Caractere)fgetc(f_entree);
 				Place_courant = New_place;
 				New_place = Est_Dans_Dico (c,Place_courant);
@@ -176,8 +178,10 @@ void Compression (char *nom_entree)
 			Ajouter_Noeud_Dico (code,c,Place_courant);/*Ajoute le Noeud qu'il soit Fils ou Frere*/
 			//printf("\n%i -> ",code);
 			//Afficher_chaine(Place_courant->fils);
+
 			Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code);
 			code ++;
+	
 			if (code >= pow(2,nb_bit_code)){
 				if(code >=MAX_DICO)
 				{
@@ -198,7 +202,7 @@ void Compression (char *nom_entree)
 	//Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code);
 	Ecrire_Code (f_sortie,256,&bit_restants,&nb_bit_restant,nb_bit_code);
 	if (nb_bit_restant != 0){
-		Ecrire_Code (f_sortie,(char)0,&bit_restants,&nb_bit_restant,nb_bit_code);
+		Ecrire_Code (f_sortie,(Caractere)0,&bit_restants,&nb_bit_restant,nb_bit_code);
 	}
 	
 	liberer_noeud(dico.racine);

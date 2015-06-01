@@ -130,12 +130,12 @@ void Decompression (char *nom_fichier){
 						lettre = lettre -> pere;
 					}
 					for (i=0; i<lg;i++)
-						fprintf(f_sortie,"%c",chaine[i]);
-						
+					fputc(chaine[i],f_sortie);
 					free(chaine);
 				}
 				else {
-					fprintf(f_sortie,"%c",code_actuel);
+				fputc(code_actuel,f_sortie);
+		
 				}
 				
 				break;

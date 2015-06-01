@@ -22,7 +22,7 @@ FONCTIONS A AJOUTER :
 #include <stdlib.h>
 #include <string.h>
 #include "structure_dico.h"
-
+#include <math.h>
 
 Dictionnaire Init (void)
 {
@@ -157,6 +157,12 @@ Code Recherche_code (int *bit_restant, int *nb_bit_restant, int nb_bit_code, int
 	Code res =0;
 	int i = 0, alire =0;
 	Caractere c;
+	
+	if(*bit_restant>=pow(2,*nb_bit_restant))
+		{
+			printf("\n NON");
+			exit(0);
+		}
 	
 	alire = nb_bit_code - *nb_bit_restant;
 	
