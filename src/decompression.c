@@ -44,6 +44,7 @@ void Afficher_chaine_d (un_noeud *lettre){
 
 }
 
+
 void Decompression (char *nom_fichier){
 	/* Ouverture et creation des fichiers*/
 	
@@ -59,10 +60,10 @@ void Decompression (char *nom_fichier){
 	/*Creation du dico*/
 	Dictionnaire dico;
 	dico = Init();
-	
+	un_noeud*tab_code[MAX_DICO];
+
 	/*Creation d'un tableau d'adresse de noeud*/
-	un_noeud** tab_code;
-	tab_code = malloc(MAX_DICO*sizeof(un_noeud));
+
 	lg=0;
 	
 	while (lg<MAX_DICO){
@@ -79,7 +80,6 @@ void Decompression (char *nom_fichier){
 	nb_bit_code = 9;
 	fin_decomp = 0;
 	int cp1,cp2;
-	
 	while (fin_decomp != 1){
 		/*get_code permet de recuperer le code du prochain caractere a decoder et utilise les bit en trop du code precedent*/
 
@@ -97,8 +97,9 @@ void Decompression (char *nom_fichier){
 				break;
 			/*Reinit dico*/
 			case 258 : 
+				liberer_noeud(dico.racine);
 				dico = Init();
-				printf("\n Je te réinitialise maggle");
+				//printf("\n Je te réinitialise maggle");
 				for(lg=0;lg<MAX_DICO;lg++)
 					tab_code[lg]=NULL;
 				nb_bit_code=9;
@@ -119,19 +120,18 @@ void Decompression (char *nom_fichier){
 
 					lettre = tab_code[code_actuel-START];
 					
-					lg = nb_pere(lettre);
+					lg = nb_pere(lettre)+1;
 					
-					chaine = malloc(lg*sizeof(char)+1);
-					chaine[lg+1]='\0';
-					i=lg;
+					chaine = malloc((lg+1)*sizeof(char));
+					i=lg-1;
 					while (lettre != NULL && i >= 0){
 						chaine[i]=lettre->car;
 						i--;
 						lettre = lettre -> pere;
 					}
-					for (i=0; i<=lg;i++)
-						fprintf(f_sortie,"%c",chaine[i]);
-					//free(chaine);
+					for (i=0; i<lg;i++)
+					fprintf(f_sortie,"%c",chaine[i]);
+					free(chaine);
 				}
 				else {
 					fprintf(f_sortie,"%c",code_actuel);
@@ -142,13 +142,10 @@ void Decompression (char *nom_fichier){
 		
 	
 	}
-printf("\n %i ",parcours_tab_code(tab_code));
-
+	liberer_noeud(dico.racine);
 	fclose(f_sortie);
 	fclose(f_entree);
 
-
-
-
+	printf("\n Décompression terminée");
 
 }

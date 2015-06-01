@@ -17,7 +17,7 @@ un_noeud* Est_Dans_Dico (Caractere wc, un_noeud* AC);
 
 void Ajouter_Noeud_Dico (Code code,char c,un_noeud* Place);
 
-
+void liberer_noeud(un_noeud * AC);
 /*
   this function gives the higher node in a dictionnary
   param : a node

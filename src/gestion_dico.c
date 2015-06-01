@@ -67,6 +67,25 @@ Dictionnaire Init (void)
 	return d;
 }
 
+
+void liberer_noeud(un_noeud * AC)
+{
+	if(AC!=NULL)
+	{
+			if(AC->fils!=NULL)
+				liberer_noeud(AC->fils);
+			if(AC->frere!=NULL)
+				liberer_noeud(AC->frere);
+			free(AC);
+	}
+}
+
+
+
+
+
+
+
 /* si renvoit de temp il a trouve le caractere il faut donc regarder le caractere suivant sinon on doit rajouter ce caractere dans le dico*/
 un_noeud* Est_Dans_Dico (Caractere wc, un_noeud* AC)
 {
@@ -249,11 +268,11 @@ Code get_code (FILE *f, int *bit_restant, int *nb_bit_restant, int nb_bit_code,i
 void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Dictionnaire d)
 {
 	int lg_tab = parcours_tab_code (tab_code);
-	un_noeud* new_noeud =NULL;
-	new_noeud  = malloc(sizeof(un_noeud));
+	un_noeud* new_noeud =malloc(sizeof(un_noeud));
+	
 	un_noeud* noeud_actuel=NULL;
 
-
+//printf("\n act : %i  suiv : %i",code_actuel, code_suivant);
 	if(code_actuel >=START)
 	{
 			noeud_actuel = tab_code[code_actuel-START];
@@ -299,9 +318,6 @@ void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Diction
 	
 	noeud_actuel -> fils = new_noeud;
 	tab_code[lg_tab] = new_noeud;
-
-	
-
 	
 }
 

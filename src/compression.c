@@ -161,7 +161,6 @@ void Compression (char *nom_entree)
 	
 	c=(Caractere)fgetc(f_entree);
 
-
 	while (!feof(f_entree))
 	{
 			Place_courant = dico.racine;
@@ -184,6 +183,7 @@ void Compression (char *nom_entree)
 				{
 					Ecrire_Code (f_sortie,258,&bit_restants,&nb_bit_restant,nb_bit_code);
 					nb_bit_code=9;	
+					liberer_noeud(dico.racine);
 					dico = Init ();
 					code=START;	
 				}
@@ -200,10 +200,12 @@ void Compression (char *nom_entree)
 	if (nb_bit_restant != 0){
 		Ecrire_Code (f_sortie,(char)0,&bit_restants,&nb_bit_restant,nb_bit_code);
 	}
-	printf("\n-----------------------------------------");
 	
+	liberer_noeud(dico.racine);
 	fclose(f_entree);
 	fclose(f_sortie);
+	
+	printf("\n Compression terminée");
 }
 
 
