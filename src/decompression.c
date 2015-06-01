@@ -62,10 +62,10 @@ void Decompression (char *nom_fichier){
 	
 	/*Creation d'un tableau d'adresse de noeud*/
 	un_noeud** tab_code;
-	tab_code = malloc(512*sizeof(un_noeud));
+	tab_code = malloc(4096*sizeof(un_noeud));
 	lg=0;
 	
-	while (lg<512){
+	while (lg<4096){
 		tab_code[lg] = NULL;
 		lg++;
 	}
@@ -95,8 +95,7 @@ void Decompression (char *nom_fichier){
 			/*Separateur bit*/
 			case 257 : 
 				nb_bit_code++;
-				printf("\nbit rest : %d\n",nb_bit_restant);
-				tab_code_re = realloc(*tab_code,pow(2,nb_bit_code)*sizeof(un_noeud));
+				/*tab_code_re = realloc(*tab_code,pow(2,nb_bit_code)*sizeof(un_noeud));
 				if (tab_code_re != NULL){
 					*tab_code = tab_code_re;
 					Init_tab (tab_code,pow(2,nb_bit_code));
@@ -105,7 +104,7 @@ void Decompression (char *nom_fichier){
 					printf("Problème mémoire, cause -> realloc");
 					exit(EXIT_FAILURE);
 				}
-				printf("\nICI");
+				printf("\nICI");*/
 				break;
 			/*Reinit dico*/
 			case 258 : break;
@@ -114,25 +113,32 @@ void Decompression (char *nom_fichier){
 			cp2=nb_bit_restant;
 
 				code_suivant = get_code(f_entree,&cp1,&cp2,nb_bit_code,1);
-							printf("\n Code suivant : %i\n",code_suivant);
-				ajout_dico (code_actuel,code_suivant,tab_code,dico);
+				
+				if(code_suivant==257 )
+					code_suivant = get_code(f_entree,&cp1,&cp2,nb_bit_code+1,1);
+				
+				if(code_suivant!=256)
+					ajout_dico (code_actuel,code_suivant,tab_code,dico);
+					
 				if (code_actuel>258){
 
 					lettre = tab_code[code_actuel-START];
 					
 					lg = nb_pere(lettre);
 					
-					chaine = malloc(lg*sizeof(char));
-					
+					chaine = malloc(lg*sizeof(char)+1);
+					chaine[lg+1]='\0';
 					while (lettre != NULL && lg >= 0){
 						chaine[lg]=lettre->car;
 						lg--;
 						lettre = lettre -> pere;
 					}
+					
 					fprintf(f_sortie,"%s",chaine);
 					//free(chaine);
 				}
 				else {
+				printf("\n ECRITURE : '%c'",code_actuel);
 					fprintf(f_sortie,"%c",code_actuel);
 				}
 				

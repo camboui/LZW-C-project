@@ -242,7 +242,8 @@ Code get_code (FILE *f, int *bit_restant, int *nb_bit_restant, int nb_bit_code,i
 void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Dictionnaire d)
 {
 	int lg_tab = parcours_tab_code (tab_code);
-	un_noeud* new_noeud = malloc(sizeof(un_noeud));
+	un_noeud* new_noeud =NULL;
+	new_noeud  = malloc(sizeof(un_noeud));
 	un_noeud* noeud_actuel=NULL;
 	
 
@@ -258,7 +259,7 @@ void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Diction
 				noeud_actuel = noeud_actuel -> frere;
 			}
 	}
-	
+
 	if(code_suivant<START)
 	{
 		new_noeud -> car = code_suivant;
@@ -269,16 +270,27 @@ void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Diction
 	}
 	else
 	{
-		new_noeud -> car = get_first_letter(tab_code[code_actuel-START]);
+		if(code_actuel<256)
+			new_noeud -> car = noeud_actuel -> car;
+		else 
+		{
+			new_noeud -> car = get_first_letter(tab_code[code_actuel-START]);
+		}
+			
 	}
-	
+
+
+			
+	new_noeud -> fils = NULL;
 	new_noeud -> code = START + lg_tab;
 	new_noeud -> pere = noeud_actuel;
 	new_noeud -> frere = noeud_actuel -> fils;
-	new_noeud -> fils = NULL;
 	
 	noeud_actuel -> fils = new_noeud;
 	tab_code[lg_tab] = new_noeud;
+
+	
+
 	
 }
 
