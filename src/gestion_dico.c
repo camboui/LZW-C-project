@@ -79,11 +79,6 @@ un_noeud* Est_Dans_Dico (Caractere wc, un_noeud* AC)
 	un_noeud* temp =NULL;
 	temp = AC;
 
-	if (temp ==NULL || temp -> fils==NULL)
-	{
-		fprintf (stderr,"Erreur : temp ==NULL || temp -> fils==NULL dans Est_dans_dico();\n");
-		exit (EXIT_FAILURE);
-	}
 	temp = temp -> fils;
 
 	
