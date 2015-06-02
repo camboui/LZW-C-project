@@ -5,11 +5,11 @@
 #define SORTIE2 "sortiedecoder"
 #define SORTIE3 "freq.txt"
 
-int coder_rle(void)
+int rle(void)
 {
   //premier permet que le premier caratère lu soit correct
-  unsigned char compteur=0,premier=1;
-  unsigned char a,b;
+  unsigned char compteur=1;
+  unsigned int a,b;
 
   FILE *f_lecture = NULL, *f_ecriture = NULL;
   
@@ -27,48 +27,59 @@ int coder_rle(void)
 
   a=fgetc(f_lecture);
   b=a;
-  a=fgetc(f_lecture);
+   a=fgetc(f_lecture);
 
-  while (!feof(f_lecture))
+  do
     {	
-      if (a!=b && compteur < 1)
+      if (a!=b && compteur < 2)
 	{
 	  fputc(b,f_ecriture);
-	  compteur=0;
+	  compteur=1;
 	}
-      if (a!=b && compteur >= 1)
+      if (a!=b && compteur >= 2 && compteur <255)
 	{
 	  fputc(b,f_ecriture);
 	  fputc(b,f_ecriture);
-	  fputc(compteur-1,f_ecriture);
-	  compteur=0;
+	  //printf("valeur compteur codage : %d\n",compteur);
+	  fputc(compteur-2,f_ecriture);
+	  compteur=1;
 	}
       else if(a==b)
 	{
-	  printf(" ta soeur %d \n",compteur);
-	  if(compteur==254)
+	  //printf(" ta soeur %d \n",compteur);
+	  if(compteur==255)
 	    {
 	      fputc(b,f_ecriture);
 	      fputc(b,f_ecriture);
-	      fputc(compteur-1,f_ecriture);
+	      //      printf("valeur compteur codage : %d\n",compteur);
+	      fputc(compteur-2,f_ecriture);
 	      compteur=0;
 	    }
+	  if(compteur>255)
+	    {
+	      printf("erreur	overflow \n");
+	    }
+	  else
 	  compteur++;
 	}
       b=a;
-      a=fgetc(f_lecture);
+     
     } 
+  while ((a = fgetc(f_lecture)) != EOF);
 
-  if (compteur < 1)
+  if (compteur < 2)
     {
       fputc(b,f_ecriture);
+      //printf("valeur %d \n",b);
     }
-  if ( compteur >= 1)
+  if ( compteur >= 2)
     {
       fputc(b,f_ecriture);
       fputc(b,f_ecriture);
-      fputc(compteur-1,f_ecriture);
+      //printf("valeur compteur codage de fin : %d\n",compteur);
+      fputc(compteur-2,f_ecriture);
     }
+  //fputc(a,f_ecriture);  caractere fin de chaine à impr ?
   fclose(f_ecriture);
   fclose(f_lecture);
   return 0;	
@@ -78,7 +89,8 @@ int coder_rle(void)
 
 int decoder_rle(void)
 {
-  unsigned char a,b,comp,compteur;
+  unsigned int a,b;
+    unsigned char comp,compteur;
 
   FILE *f_lecture = NULL, *f_ecriture = NULL;
   
@@ -95,42 +107,38 @@ int decoder_rle(void)
     }
   a=fgetc(f_lecture);
   b=a;
-  a=fgetc(f_lecture);
-  while(!feof(f_lecture))
+  a= fgetc(f_lecture);
+  do
     {
+  
+
       if(a!=b)
 	{
 	  fputc(b,f_ecriture);
+	 
 	}		
       else
 	{
 	  fputc(b,f_ecriture);
 	  fputc(b,f_ecriture);
 	  comp=fgetc(f_lecture);
+	  //	 printf("valeur compteur decodage %d : \n ",comp);
 	  for(compteur=0;compteur<comp;compteur++)
 	    {
 	      fputc(b,f_ecriture);
 	    }
-	 a= fgetc(f_lecture);
+	   a= fgetc(f_lecture);
+	
 	}
       b=a;
-      a=fgetc(f_lecture);
-    }
- 
-  return 0;
-}
-
-
-//Fonction permettant d'initialiser un tableau à 2 dimensions
-int init_tableau(int tab[2][255])
-{
-  int i,j;
-  for(i=0;i<2;i++)
+      //   printf("valeur de b %c\n",b);
+      //printf("valeur de a %c\n",a);
+    }while ((a=fgetc(f_lecture)) != EOF);
+  if(b!=EOF)
     {
-      for(j=0;j<255;j++)
-	{
-	  tab[i][j]=0;
-	}
+      fputc(b,f_ecriture);
     }
+  fclose(f_lecture);
+  fclose(f_ecriture);
   return 0;
 }
