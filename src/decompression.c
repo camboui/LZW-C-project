@@ -44,6 +44,21 @@ void Afficher_chaine_d (un_noeud *lettre){
 
 }
 
+int valeur_bit2 (int n, int nb)
+{
+	return ((nb&(1<<n)))>>n;
+}
+
+void afficher_val_bit2(int nb)
+{
+	int i;
+
+	for ( i=7;i>=0;i--)
+	{
+		printf("%i",valeur_bit2(i,nb));
+	}
+
+}
 
 void Decompression (char *nom_fichier){
 	/* Ouverture et creation des fichiers*/
@@ -73,13 +88,16 @@ void Decompression (char *nom_fichier){
 	
 	
 
-	char *chaine;
+	Caractere *chaine;
 	Code code_actuel=0, code_suivant = 0;
-	un_noeud* lettre;
-	int bit_restant=0,fin_decomp,nb_bit_code,nb_bit_restant=0,i;
+	un_noeud* lettre=NULL;
+	int fin_decomp,nb_bit_code,i;
+	unsigned int nb_bit_restant=0;
+	Caractere bit_restant=0;
 	nb_bit_code = 9;
 	fin_decomp = 0;
-	int cp1,cp2;
+	unsigned int  cp2;
+	Caractere cp1;
 	while (fin_decomp != 1){
 		/*get_code permet de recuperer le code du prochain caractere a decoder et utilise les bit en trop du code precedent*/
 
@@ -103,17 +121,20 @@ void Decompression (char *nom_fichier){
 				for(lg=0;lg<MAX_DICO;lg++)
 					tab_code[lg]=NULL;
 				nb_bit_code=9;
+				
+
 			break;
 			default : 
 			cp1=bit_restant;
 			cp2=nb_bit_restant;
 
+
 				code_suivant = get_code(f_entree,&cp1,&cp2,nb_bit_code,1);
-				
-				if(code_suivant==257)
-					code_suivant = get_code(f_entree,&cp1,&cp2,nb_bit_code+1,1);
-				
-				if(code_suivant!=256 && code_suivant!=258)
+	
+				/*if(code_suivant==257)
+					code_suivant = get_code(f_entree,&cp1,&cp2,nb_bit_code+1,0);
+				*/
+				if(code_suivant!=256 && code_suivant!=258 &&  code_suivant!=257)
 					ajout_dico (code_actuel,code_suivant,tab_code,dico);
 					
 				if (code_actuel>=START ){
@@ -122,19 +143,22 @@ void Decompression (char *nom_fichier){
 					
 					lg = nb_pere(lettre)+1;
 					
-					chaine = malloc((lg+1)*sizeof(char));
+					chaine = malloc((lg+1)*sizeof(Caractere));
 					i=lg-1;
-					while (lettre != NULL && i >= 0){
+					while (lettre != NULL && i >= 0 && !feof(f_entree)){
 						chaine[i]=lettre->car;
 						i--;
 						lettre = lettre -> pere;
 					}
 					for (i=0; i<lg;i++)
-					fputc(chaine[i],f_sortie);
+					{
+						fputc(chaine[i],f_sortie);
+					}
 					free(chaine);
+				
 				}
 				else {
-				fputc(code_actuel,f_sortie);
+				fputc((Caractere)code_actuel,f_sortie);
 		
 				}
 				

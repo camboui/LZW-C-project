@@ -26,7 +26,7 @@ FONCTIONS A AJOUTER :
 
 Dictionnaire Init (void)
 {
-	int i=0;
+	unsigned int i=0;
 	Dictionnaire d;
 	d.racine=NULL;
 	d.racine=malloc(sizeof(un_noeud));
@@ -48,7 +48,7 @@ Dictionnaire Init (void)
 	AC=d.racine->fils;
 
 	
-	for(i=0;i<START;i++)
+	for(i=0;i<256;i++)
 	{
 
 		AC->code = i;
@@ -151,23 +151,32 @@ Caractere get_first_letter(un_noeud *node)
 	    	return AC -> car;
 }
 
-Code Recherche_code (int *bit_restant, int *nb_bit_restant, int nb_bit_code, int *chaine){
+int valeur_bit (int n, int nb)
+{
+	return ((nb&(1<<n)))>>n;
+}
+
+void afficher_val_bit(int nb)
+{
+	int i;
+	printf("\n\n");
+	for ( i=7;i>=0;i--)
+	{
+		printf("%i",valeur_bit(i,nb));
+	}
+	printf("\n\n");
+}
+Code Recherche_code (Caractere *bit_restant, unsigned int  *nb_bit_restant, int nb_bit_code, Caractere *chaine){
 
 
-	Code res =0;
+	Code res = 0;
 	int i = 0, alire =0;
 	Caractere c;
-	
-	if(*bit_restant>=pow(2,*nb_bit_restant))
-		{
-			printf("\n NON");
-			exit(0);
-		}
-	
+
 	alire = nb_bit_code - *nb_bit_restant;
 	
 	res = *bit_restant << alire;
-	
+
 	while (alire>0){
 		*bit_restant = chaine[i];
 		i++;
@@ -176,16 +185,21 @@ Code Recherche_code (int *bit_restant, int *nb_bit_restant, int nb_bit_code, int
 			res = res | (*bit_restant << alire);
 			*bit_restant = 0;
 			*nb_bit_restant = 0;
+
 		}
 		else {
 			*nb_bit_restant = 8 - alire;
+			/*masque = masque >> (8-alire);
+			*bit_restant = *bit_restant & (masque);*/
+
 			res = res | (*bit_restant >> (8-alire));
+c=0;
 			c=*bit_restant;
+
 			c = (c << alire);
+
 			*bit_restant = (c >> alire);
-			if (*bit_restant < 0){
-				*bit_restant = -*bit_restant;
-			}
+	
 			alire =0;
 		}
 		
@@ -250,26 +264,37 @@ void Afficher_chaine_de (un_noeud *lettre){
 
 }
 
-Code get_code (FILE *f, int *bit_restant, int *nb_bit_restant, int nb_bit_code,int executer_retour)
+Code get_code (FILE *f, Caractere *bit_restant, unsigned int  *nb_bit_restant, int nb_bit_code,int executer_retour)
 {
 	int nb_case = 1,alire = (nb_bit_code - *nb_bit_restant),i;
+	Code code;
 	while (alire>8){
 		alire-=8;
 		nb_case++;
 	}
 	
-	int car_lus[nb_case];
-	
-	for(i=0;i<nb_case;i++){
-		car_lus[i] = fgetc(f);
-	}
+	Caractere car_lus[nb_case];
 
-	if(executer_retour==1)
+	for(i=0;i<nb_case;i++){
+		car_lus[i] = (Caractere)fgetc(f);
+		
+	}
+	code = Recherche_code (bit_restant,nb_bit_restant,nb_bit_code,car_lus);
+	if(executer_retour==1 && code == 257) 
 	{
+		Caractere tmp1=*bit_restant;
+		unsigned int tmp2=*nb_bit_restant;
+	
+		code = get_code (f,&tmp1,&tmp2,nb_bit_code+1,1);
 		fseek(f,-nb_case, SEEK_CUR);
 	}
-	return Recherche_code (bit_restant,nb_bit_restant,nb_bit_code,car_lus);
+	else if(executer_retour==1)
+		fseek(f,-nb_case, SEEK_CUR);
+	
+	return code;
 }
+
+
 
 void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Dictionnaire d)
 {
@@ -278,10 +303,12 @@ void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Diction
 	
 	un_noeud* noeud_actuel=NULL;
 
-//printf("\n act : %i  suiv : %i",code_actuel, code_suivant);
+
 	if(code_actuel >=START)
 	{
 			noeud_actuel = tab_code[code_actuel-START];
+
+
 	}
 	else
 	{
@@ -298,7 +325,7 @@ void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Diction
 
 	if(code_suivant<START)
 	{
-		new_noeud -> car = code_suivant;
+		new_noeud -> car = (Caractere)code_suivant;
 	}
 	else if( tab_code[code_suivant-START] != NULL)
 	{
@@ -315,15 +342,16 @@ void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Diction
 			
 	}
 
-
-			
 	new_noeud -> fils = NULL;
 	new_noeud -> code = START + lg_tab;
 	new_noeud -> pere = noeud_actuel;
 	new_noeud -> frere = noeud_actuel -> fils;
 	
+	
 	noeud_actuel -> fils = new_noeud;
+
 	tab_code[lg_tab] = new_noeud;
+
 	
 }
 

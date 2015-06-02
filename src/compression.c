@@ -21,21 +21,7 @@ FONCTIONS NECESSAIRES :
 #include <math.h>
 #include "gestion_dico.h"
 
-int valeur_bit (int n, int nb)
-{
-	return ((nb&(1<<n)))>>n;
-}
 
-void afficher_val_bit(int nb)
-{
-	int i;
-	printf("\n\n");
-	for ( i=7;i>=0;i--)
-	{
-		printf("%i",valeur_bit(i,nb));
-	}
-	printf("\n\n");
-}
 
 void Afficher_chaine (un_noeud *lettre){
 
@@ -202,7 +188,7 @@ void Compression (char *nom_entree)
 	//Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code);
 	Ecrire_Code (f_sortie,256,&bit_restants,&nb_bit_restant,nb_bit_code);
 	if (nb_bit_restant != 0){
-		Ecrire_Code (f_sortie,(Caractere)0,&bit_restants,&nb_bit_restant,nb_bit_code);
+		Ecrire_Code (f_sortie,(Caractere)0,&bit_restants,&nb_bit_restant,8);
 	}
 	
 	liberer_noeud(dico.racine);

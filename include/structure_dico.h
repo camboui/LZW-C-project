@@ -14,7 +14,7 @@
 #define MAX_DICO 4096
 
 typedef unsigned char Caractere;
-typedef uint32_t Code;
+typedef unsigned int  Code;
 
 /*Un noeud est défini par 2 variables et 3 pointeurs de noeud*/
 typedef struct un_noeud un_noeud;
