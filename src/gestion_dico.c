@@ -15,27 +15,31 @@ Dictionnaire Init (void)
 {
 	unsigned int i=0;
 	Dictionnaire d;
+	un_noeud*AC=NULL;
 	d.racine=NULL;
 	d.racine=malloc(sizeof(un_noeud));
-	d.racine->pere=NULL;
-	d.racine->frere=NULL;
-	d.racine->car=0;
-	d.racine->code=0;
-
-	un_noeud*AC=NULL;
-	
 	if (d.racine==NULL)
 	{
 		fprintf (stderr,"Echec de l'allocation de la racine dans Init();\n");
 		exit (EXIT_FAILURE);
 	}
 	
+	d.racine->pere=NULL;
+	d.racine->frere=NULL;
+	d.racine->car=0;
+	d.racine->code=0;
+	
 	AC=malloc(sizeof(un_noeud));
+	if (AC==NULL)
+	{
+		fprintf (stderr,"Echec de l'allocation du noeud dans Init();\n");
+		exit (EXIT_FAILURE);
+	}
+	
 	d.racine->fils=AC;
 	AC=d.racine->fils;
 
-	
-	for(i=0;i<256;i++)
+	for(i=0;i<256;i++)/*On ajoute tous les noeuds de premiers 1 étage (=étage de base)*/
 	{
 
 		AC->code = i;
@@ -74,16 +78,19 @@ un_noeud* Est_Dans_Dico (Caractere wc, un_noeud* AC)
 {
 	un_noeud* temp =NULL;
 	temp = AC;
-	int cpt=0;
 
-		temp = temp -> fils;
-	
+	if (temp ==NULL || temp -> fils==NULL)
+	{
+		fprintf (stderr,"Erreur : temp ==NULL || temp -> fils==NULL dans Est_dans_dico();\n");
+		exit (EXIT_FAILURE);
+	}
+	temp = temp -> fils;
+
 	
 	if (temp != NULL) {
-		while(temp->frere != NULL && temp->car != wc)
+		while(temp->frere != NULL && temp->car != wc)/*On se place sur le noeud correspondant au caractère*/
 		{
 			temp=temp->frere;
-			cpt++;
 		}
 		if (temp->car != wc){
 			return AC;
@@ -118,8 +125,7 @@ void Ajouter_Noeud_Dico (Code code,char c,un_noeud* Place)
 }
 
 
-/* Retourne le premier caractere du mot */
-
+/* Retourne le caractère dont le père le plus éloigné, est un noeud de premier étage*/
 Caractere get_first_letter(un_noeud *node)
 {
 	un_noeud *AC= node;
@@ -133,7 +139,7 @@ Caractere get_first_letter(un_noeud *node)
 
 
 
-/* Permet de nous donner le prochain code à mettre dans le dico */
+/* Retourne la taille du tableau de noeuds */
 int parcours_tab_code (un_noeud **tab_code)
 {
 	int i=0; 
@@ -164,33 +170,37 @@ int nb_pere (un_noeud* n){
 void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Dictionnaire d)
 {
 	int lg_tab = parcours_tab_code (tab_code);
-	un_noeud* new_noeud =malloc(sizeof(un_noeud));
-	
+	un_noeud* new_noeud = NULL;
 	un_noeud* noeud_actuel=NULL;
-
-
-	if(code_actuel >=START) // On regarde si le code actuel est 
+	new_noeud = malloc(sizeof(un_noeud));
+	if (new_noeud==NULL)
 	{
-			noeud_actuel = tab_code[code_actuel-START];
-	}
-	else
-	{
-			noeud_actuel = d.racine->fils; 
-			while(noeud_actuel -> frere != NULL && noeud_actuel->code != code_actuel)
-			{
-				noeud_actuel = noeud_actuel -> frere;
-			}
+		fprintf (stderr,"Echec de l'allocation de new_noeud dans  ajout_dico ();\n");
+		exit (EXIT_FAILURE);
 	}
 
-	if(code_suivant<START)
+	if(code_actuel >=START) /*Si le code n'est pas un code de base, on prend le noeud correspondant dans le tableau*/ 
+	{
+		noeud_actuel = tab_code[code_actuel-START];
+	}
+	else	/*Sinon on cherche le noeud correspondant au code*/
+	{
+		noeud_actuel = d.racine->fils; 
+		while(noeud_actuel -> frere != NULL && noeud_actuel->code != code_actuel)
+		{
+			noeud_actuel = noeud_actuel -> frere;
+		}
+	}
+
+	if(code_suivant<START) /*Si c'est un caractère basique on l'affecte directement*/
 	{
 		new_noeud -> car = (Caractere)code_suivant;
 	}
-	else if( tab_code[code_suivant-START] != NULL)
+	else if( tab_code[code_suivant-START] != NULL)/*Sinon on cherche le caractère qui lui est associé*/
 	{
 		new_noeud -> car =  get_first_letter(tab_code[code_suivant-START]);
 	}
-	else
+	else/*Si le code n'est pas déjà connu*/
 	{
 		if(code_actuel<256)
 			new_noeud -> car = noeud_actuel -> car;

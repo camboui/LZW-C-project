@@ -94,13 +94,25 @@ Code get_code (FILE *f, Caractere *bit_restant, unsigned int  *nb_bit_restant, i
 /*Fonction principal de decompression */
 void Decompression (char *nom_fichier){
 	
-	/* Ouverture et creation des fichiers*/
-	int lg = strlen(nom_fichier);
+	Dictionnaire dico;
 	char nom_fichier_sortie[lg];
+	/*Creation d'un tableau d'adresse de noeud*/
+	
+	Caractere *chaine;
+	Code code_actuel=0, code_suivant = 0;
+	un_noeud* lettre=NULL;
+	int fin_decomp,nb_bit_code,i,lg = strlen(nom_fichier);;
+	unsigned int nb_bit_restant=0,cp2;
+	Caractere bit_restant=0,cp1;
+	
+	un_noeud*tab_code[MAX_DICO];
+	Init_tab (tab_code);
+	
+	
 	strcpy(nom_fichier_sortie,nom_fichier);
 	nom_fichier_sortie[lg-4]= '\0';
 	strcat(nom_fichier_sortie,"_res");
-	
+	/* Ouverture et creation des fichiers*/
 	FILE *f_entree, *f_sortie;
 	
 	f_entree = fopen(nom_fichier,"r");
@@ -110,7 +122,6 @@ void Decompression (char *nom_fichier){
 		exit (EXIT_FAILURE);
 	}
 	
-	
 	f_sortie = fopen(nom_fichier_sortie,"w+");
 	if (f_sortie == NULL)
 	{
@@ -119,30 +130,15 @@ void Decompression (char *nom_fichier){
 	}
 	
 	/*Creation du dico*/
-	Dictionnaire dico;
 	dico = Init();
 	if (dico.racine == NULL)
 	{
 		fprintf (stderr,"Echec de l'initialisation du dictionnaire\n");
 		exit (EXIT_FAILURE);
 	}
-	
 
-	/*Creation d'un tableau d'adresse de noeud*/
-	un_noeud*tab_code[MAX_DICO];
-	Init_tab (tab_code);
-
-	
-	Caractere *chaine;
-	Code code_actuel=0, code_suivant = 0;
-	un_noeud* lettre=NULL;
-	int fin_decomp,nb_bit_code,i;
-	unsigned int nb_bit_restant=0;
-	Caractere bit_restant=0;
 	nb_bit_code = 9;
 	fin_decomp = 0;
-	unsigned int  cp2;
-	Caractere cp1;
 	
 	while (fin_decomp != 1){
 		/*get_code permet de recuperer le code du prochain caractere a decoder et utilise les bit en trop du code precedent*/
@@ -164,31 +160,29 @@ void Decompression (char *nom_fichier){
 				dico = Init();
 				Init_tab (tab_code);
 				nb_bit_code=9;
-				
-
 			break;
 			default : 
 				cp1=bit_restant;
 				cp2=nb_bit_restant;
 				code_suivant = get_code(f_entree,&cp1,&cp2,nb_bit_code,1);
 	
-				if(code_suivant!=256 && code_suivant!=258 &&  code_suivant!=257)
+				if(code_suivant!=256 && code_suivant!=258 &&  code_suivant!=257)/*On n'ajoute rien au dico si on a un caractère spécial*/
 					ajout_dico (code_actuel,code_suivant,tab_code,dico);
 					
-				if (code_actuel>=START ){
+				if (code_actuel>=START){/*Si le code n'est un code basique*/
 
 					lettre = tab_code[code_actuel-START];
 					lg = nb_pere(lettre)+1;
 					chaine = malloc((lg+1)*sizeof(Caractere));
 					i=lg-1;
 					
-					while (lettre != NULL && i >= 0 && !feof(f_entree)){
+					while (lettre != NULL && i >= 0 && !feof(f_entree)){/*On récupère les caractère dans l'ordre inverse à la racine*/
 						chaine[i]=lettre->car;
 						i--;
 						lettre = lettre -> pere;
 					}
 					
-					for (i=0; i<lg;i++)
+					for (i=0; i<lg;i++)/*On les écrit dans l'ordre partant de la racine*/
 					{
 						fputc(chaine[i],f_sortie);
 					}
@@ -196,7 +190,8 @@ void Decompression (char *nom_fichier){
 					free(chaine);
 				}
 				else {
-				fputc((Caractere)code_actuel,f_sortie);
+					/*Si le caractère est basique, on peut l'afficher directement*/
+					fputc((Caractere)code_actuel,f_sortie);
 		
 				}
 				
@@ -205,6 +200,8 @@ void Decompression (char *nom_fichier){
 		
 	
 	}
+	
+	/*On libère toute notre mémoire*/
 	liberer_noeud(dico.racine);
 	fclose(f_sortie);
 	fclose(f_entree);

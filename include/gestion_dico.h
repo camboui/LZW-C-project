@@ -9,33 +9,35 @@
 #define GESTION_DICO_H
 #include "structure_dico.h"
 
+/* Fonction d'initialisation du dictionnaire*/
 Dictionnaire Init (void);
 
-/* si renvoit de temp il a trouve le caractere il faut donc regarder le caractere suivant sinon on doit rajouter ce caractere dans le dico*/
+
+/* Libere tous les noeuds du dico */
+void liberer_noeud(un_noeud * AC);
+
+
+/* si renvoit de temp il a trouve le caractere il faut donc regarder le caractere suivant sinon on doit rajouter ce caractere dans le dico */
 un_noeud* Est_Dans_Dico (Caractere wc, un_noeud* AC);
 
 
-void Ajouter_Noeud_Dico (Code code,Caractere c,un_noeud* Place);
+/* Permet d'ajouter un noeud au dictionnaire de compression */
+void Ajouter_Noeud_Dico (Code code,char c,un_noeud* Place);
 
-void liberer_noeud(un_noeud * AC);
-/*
-  this function gives the higher node in a dictionnary
-  param : a node
-  return a caractere
-*/
+
+/* Retourne le caractère dont le père le plus éloigné, est un noeud de premier étage*/
 Caractere get_first_letter(un_noeud *node);
-void ajout_dico2 (Code code_actuel,Code code_suivant,Dictionnaire d);
-
-Code Recherche_code (Caractere *bit_restant, unsigned int  *nb_bit_restant, int nb_bit, Caractere *chaine);
 
 
+/* Retourne la taille du tableau de noeuds */
 int parcours_tab_code (un_noeud **tab_code);
 
 
-void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Dictionnaire d);
-
+/* Retourne le nombre de pere du noeud donné en paramètre */
 int nb_pere (un_noeud* n);
 
-Code get_code (FILE *f, Caractere *bit_restant, unsigned int  *nb_bit_restant, int nb_bit_code,int executer_retour);
+
+/* Permet d'ajouter un noeud au dictionnaire de decompression */
+void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Dictionnaire d);
 
 #endif
