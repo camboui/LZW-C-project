@@ -205,5 +205,6 @@ void Decompression (char *nom_fichier){
 	liberer_noeud(dico.racine);
 	fclose(f_sortie);
 	fclose(f_entree);
+	printf("\n nouveau fichier %s ",nom_fichier_sortie);
 
 }

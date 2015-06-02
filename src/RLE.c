@@ -84,6 +84,7 @@ int rle(char * nom_entree)
 
 	fclose(f_ecriture);
 	fclose(f_lecture);
+	printf("\n nouveau fichier %s ",nom_sortie);
 	return 0;	
 }
 
@@ -143,6 +144,6 @@ int decoder_rle(char * nom_entree)
 	}
 	fclose(f_lecture);
 	fclose(f_ecriture);
-	
+	printf("\n nouveau fichier %s ",nom_sortie);
 	return 0;
 }

@@ -142,6 +142,7 @@ void Compression (char *nom_entree)
 	liberer_noeud(dico.racine);
 	fclose(f_entree);
 	fclose(f_sortie);
+	printf("\n nouveau fichier %s ",nom_sortie);
 }
 
 
