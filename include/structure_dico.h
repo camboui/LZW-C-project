@@ -16,7 +16,8 @@
 typedef unsigned char Caractere;
 typedef unsigned int  Code;
 
-/*Un noeud est défini par 2 variables et 3 pointeurs de noeud*/
+/*Permet de définir un arbre n-aire
+	Chaque noeud possède un caractère et un code.*/
 typedef struct un_noeud un_noeud;
 struct un_noeud
 {
@@ -27,7 +28,7 @@ struct un_noeud
     struct un_noeud *fils;
 };
 
-/*Définition d'une liste de noeuds*/
+/*Un dictionnaire est une liste de noeuds*/
 typedef struct Dictionnaire Dictionnaire;
 struct Dictionnaire
 {
