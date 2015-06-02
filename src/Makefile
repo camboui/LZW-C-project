@@ -5,7 +5,7 @@
 # 	Florian PIERRE-LOUIS
 
 CC = gcc
-SRCS = main.c compression.c decompression.c gestion_dico.c
+SRCS = main.c compression.c decompression.c gestion_dico.c RLE.c
 OBJS = $(SRCS:.c=.o)
 CFLAGS = -W -Wall -g -I ../include
 

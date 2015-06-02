@@ -5,16 +5,6 @@
 	Florian PIERRE-LOUIS
 */
 
-/*Bourrer les avec des 0 quand trop grand.
-ex : 12 bits à lire et fin de fichier, bourrer 3 bits à 0*/
-
-/*
-FONCTIONS NECESSAIRES :
-
-	Est_Dans_Dico (wc, dico);
-	Ajouter_Noeud_Dico (dico,code,wc,Place);
-
-*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,27 +13,15 @@ FONCTIONS NECESSAIRES :
 
 
 
-void Afficher_chaine (un_noeud *lettre){
+/*
+	Ecrire code : 
+	écrit sous forme d'octets les bits correspondants au code dans un fichier.
+	Les bits étants écrits 8 par 8, il peux y avoir un reste qui est stocké dans les paramètres :
+		bit_restant 
+		nb_bit_restant
+		nb_bit_code
 
-	int lg;
-	char* chaine;
-	
-	lg = nb_pere(lettre);
-					
-	chaine = malloc(lg*sizeof(char));
-	
-	while (lettre != NULL && lg >= 0){
-		chaine[lg]=lettre->car;
-		lg--;
-		lettre = lettre -> pere;
-	}
-	printf("-%s-\n",chaine);
-	//printf("\n-----%i-----)%i(-----\n",chaine[0],chaine[1]);
-
-
-}
-
-
+*/
 void Ecrire_Code (FILE *f, Code code, Caractere *bit_restant,int *nb_bit_restant, int nb_bit_code)
 {
 	Caractere res=0;
@@ -52,16 +30,12 @@ void Ecrire_Code (FILE *f, Code code, Caractere *bit_restant,int *nb_bit_restant
 	int  alire =0,place_res=8;
 	
 	place_res-= *nb_bit_restant;
-	//afficher_val_bit(*bit_restant);
-	//printf("\n---------%i--------%i---------",res, place_res); 
 	res = *bit_restant << place_res; /* On récupère les bits du buffer et on fait pour les bits restants (pris dans code) */
-	//printf("\n!!!!!%i!!!!!",res);
 	alire = nb_bit_code - place_res;
 	res = res | (code >>alire);/* Notre premier mot fait 8 bits, on peut ensuite prendre des blocs de 8 bits */
 	fprintf(f,"%c",res);
 
-
-	while (alire>=8)
+	while (alire>=8)/*Tant qu'on peut écrire des octets on le fait*/
 	{
 			res = 0;
 			res = code >> (alire - 8);
@@ -69,9 +43,8 @@ void Ecrire_Code (FILE *f, Code code, Caractere *bit_restant,int *nb_bit_restant
 			alire-=8;
 	}
 	*nb_bit_restant=alire;
-	if(alire >0 ){
-	*bit_restant =0;
-	
+	if(alire >0 ){ /*S'il reste des bits à lire, on actualise le nouveau buffer*/
+		*bit_restant =0;
 		c= (Caractere)code;
 		c =c << (8-*nb_bit_restant);/*supprimer toutes les bits inutiles à gauche du code*/
 		c= c >> (8-*nb_bit_restant);/*On remet la valeur à sa place*/
@@ -84,35 +57,8 @@ void Ecrire_Code (FILE *f, Code code, Caractere *bit_restant,int *nb_bit_restant
 }
 
 
-void Affichage_dico (un_noeud* d, int etage){
-
-	un_noeud* AC,*AF; 
-	AC = d;
-	
-	while (AC  != NULL ){
-	printf("\nFRERE");
-		printf("--%i-- ETAGE : %i", AC -> code,etage);
-		AF = AC -> fils;
-		
-	
-		while(AF != NULL){
-		etage++;
-			printf("\nFILS");
-			printf(")%i(", AF -> code);
-			printf("\n");
-			Affichage_dico (AF,etage);
-			AF = AF -> frere;
-
-		}	
-		AC = AC -> frere;
-
-	}
-}
-
-
 void Compression (char *nom_entree)
 {
-
 	Dictionnaire dico;
 	dico = Init ();
 	if (dico.racine == NULL)
@@ -162,8 +108,6 @@ void Compression (char *nom_entree)
 			}
 
 			Ajouter_Noeud_Dico (code,c,Place_courant);/*Ajoute le Noeud qu'il soit Fils ou Frere*/
-			//printf("\n%i -> ",code);
-			//Afficher_chaine(Place_courant->fils);
 
 			Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code);
 			code ++;
@@ -185,7 +129,6 @@ void Compression (char *nom_entree)
 			}
 			
 	}
-	//Ecrire_Code (f_sortie,Place_courant -> code,&bit_restants,&nb_bit_restant,nb_bit_code);
 	Ecrire_Code (f_sortie,256,&bit_restants,&nb_bit_restant,nb_bit_code);
 	if (nb_bit_restant != 0){
 		Ecrire_Code (f_sortie,(Caractere)0,&bit_restants,&nb_bit_restant,8);
@@ -194,9 +137,54 @@ void Compression (char *nom_entree)
 	liberer_noeud(dico.racine);
 	fclose(f_entree);
 	fclose(f_sortie);
-	
-	printf("\n Compression terminée");
 }
+
+
+/*
+void Afficher_chaine (un_noeud *lettre){
+
+	int lg;
+	char* chaine;
+	
+	lg = nb_pere(lettre);
+					
+	chaine = malloc(lg*sizeof(char));
+	
+	while (lettre != NULL && lg >= 0){
+		chaine[lg]=lettre->car;
+		lg--;
+		lettre = lettre -> pere;
+	}
+	printf("-%s-\n",chaine);
+}*/
+
+
+
+/*
+void Affichage_dico (un_noeud* d, int etage){
+
+	un_noeud* AC,*AF; 
+	AC = d;
+	
+	while (AC  != NULL ){
+	printf("\nFRERE");
+		printf("--%i-- ETAGE : %i", AC -> code,etage);
+		AF = AC -> fils;
+		
+	
+		while(AF != NULL){
+		etage++;
+			printf("\nFILS");
+			printf(")%i(", AF -> code);
+			printf("\n");
+			Affichage_dico (AF,etage);
+			AF = AF -> frere;
+
+		}	
+		AC = AC -> frere;
+
+	}
+}*/
 
 
 

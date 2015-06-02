@@ -4,20 +4,6 @@
 	Mathias BRANGER
 	Florian PIERRE-LOUIS
 */
-/*
-FONCTIONS A AJOUTER :
-
-	Retourne null si présent dans le dico, sinon retourne le un_noeud où il faut ajouter le un_noeud
-	Est_Dans_Dico (wc, dico);
-	
-	Ajoute le Noeud qu'il soit Fils ou Frere
-	Ajouter_Noeud_Dico (dico,code,wc,Place);
-	
-	get_code permet de recuperer le code du prochain caractere a decoder et utilise les bit en trop du code precedent
-	Il rajoutera aussi les nouveaux codes
-	code = get_code(*f_entree,*bit_restant,nb_bit_code, *tab_code);
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -79,10 +65,6 @@ void liberer_noeud(un_noeud * AC)
 			free(AC);
 	}
 }
-
-
-
-
 
 
 
@@ -151,21 +133,7 @@ Caractere get_first_letter(un_noeud *node)
 	    	return AC -> car;
 }
 
-int valeur_bit (int n, int nb)
-{
-	return ((nb&(1<<n)))>>n;
-}
 
-void afficher_val_bit(int nb)
-{
-	int i;
-	printf("\n\n");
-	for ( i=7;i>=0;i--)
-	{
-		printf("%i",valeur_bit(i,nb));
-	}
-	printf("\n\n");
-}
 Code Recherche_code (Caractere *bit_restant, unsigned int  *nb_bit_restant, int nb_bit_code, Caractere *chaine){
 
 
@@ -177,7 +145,8 @@ Code Recherche_code (Caractere *bit_restant, unsigned int  *nb_bit_restant, int 
 	
 	res = *bit_restant << alire;
 
-	while (alire>0){
+	while (alire>0)
+		{
 		*bit_restant = chaine[i];
 		i++;
 		if(alire>=8){
@@ -187,25 +156,18 @@ Code Recherche_code (Caractere *bit_restant, unsigned int  *nb_bit_restant, int 
 			*nb_bit_restant = 0;
 
 		}
-		else {
+		else 
+		{
 			*nb_bit_restant = 8 - alire;
-			/*masque = masque >> (8-alire);
-			*bit_restant = *bit_restant & (masque);*/
-
 			res = res | (*bit_restant >> (8-alire));
-c=0;
+			c=0;
 			c=*bit_restant;
-
 			c = (c << alire);
-
 			*bit_restant = (c >> alire);
-	
 			alire =0;
 		}
-		
 	}
 	return res;
-
 }
 
 
@@ -218,16 +180,6 @@ int parcours_tab_code (un_noeud **tab_code)
 	}
 	return i;
 }
-
-void Affichage (int *ch, int nb_case){
-	int i;
-	for(i=0; i<nb_case; i++){
-		printf("\n%i ",ch[i]);
-	}
-	
-	
-}
-
 
 
 int nb_pere (un_noeud* n){
@@ -245,24 +197,6 @@ int nb_pere (un_noeud* n){
 
 }
 
-void Afficher_chaine_de (un_noeud *lettre){
-
-	int lg;
-	char* chaine;
-	
-	lg = nb_pere(lettre);
-					
-	chaine = malloc(lg*sizeof(char));
-	
-	while (lettre != NULL && lg >= 0){
-		chaine[lg]=lettre->car;
-		lg--;
-		lettre = lettre -> pere;
-	}
-	printf("-%s-\n",chaine);
-
-
-}
 
 Code get_code (FILE *f, Caractere *bit_restant, unsigned int  *nb_bit_restant, int nb_bit_code,int executer_retour)
 {
@@ -307,20 +241,14 @@ void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Diction
 	if(code_actuel >=START)
 	{
 			noeud_actuel = tab_code[code_actuel-START];
-
-
 	}
 	else
 	{
-	
 			noeud_actuel = d.racine->fils; 
-			
 			while(noeud_actuel -> frere != NULL && noeud_actuel->code != code_actuel)
 			{
 				noeud_actuel = noeud_actuel -> frere;
-				
 			}
-			
 	}
 
 	if(code_suivant<START)
@@ -339,20 +267,35 @@ void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Diction
 		{
 			new_noeud -> car = get_first_letter(tab_code[code_actuel-START]);
 		}
-			
 	}
-
 	new_noeud -> fils = NULL;
 	new_noeud -> code = START + lg_tab;
 	new_noeud -> pere = noeud_actuel;
 	new_noeud -> frere = noeud_actuel -> fils;
 	
-	
 	noeud_actuel -> fils = new_noeud;
-
 	tab_code[lg_tab] = new_noeud;
-
-	
 }
 
+
+
+/*
+void Afficher_chaine_de (un_noeud *lettre){
+
+	int lg;
+	char* chaine;
+	
+	lg = nb_pere(lettre);
+					
+	chaine = malloc(lg*sizeof(char));
+	
+	while (lettre != NULL && lg >= 0){
+		chaine[lg]=lettre->car;
+		lg--;
+		lettre = lettre -> pere;
+	}
+	printf("-%s-\n",chaine);
+
+
+}*/
 
