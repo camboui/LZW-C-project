@@ -9,4 +9,7 @@
 @author Florian PIERRE-LOUIS
 
 
+Compression et décompression avec l'algorithme de Lempel Ziv Welch
+
+
 

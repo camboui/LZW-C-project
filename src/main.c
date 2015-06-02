@@ -49,7 +49,7 @@ int main (int argc, char *argv[])
 	}
 	else
 	{
-		printf("\nErreur d'utilisation : ./lzw [-c/-d] [fichier]");
+		printf("\nErreur d'utilisation : ./lzw [-c/-d/-rc/-rd] [fichier]");
 	}
 	printf("\n\n");
 	return 0;
