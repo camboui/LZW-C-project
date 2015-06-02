@@ -95,13 +95,13 @@ Code get_code (FILE *f, Caractere *bit_restant, unsigned int  *nb_bit_restant, i
 void Decompression (char *nom_fichier){
 	
 	Dictionnaire dico;
-	char nom_fichier_sortie[lg];
 	/*Creation d'un tableau d'adresse de noeud*/
 	
 	Caractere *chaine;
 	Code code_actuel=0, code_suivant = 0;
 	un_noeud* lettre=NULL;
-	int fin_decomp,nb_bit_code,i,lg = strlen(nom_fichier);;
+	int fin_decomp,nb_bit_code,i,lg = strlen(nom_fichier);
+	char nom_fichier_sortie[lg];
 	unsigned int nb_bit_restant=0,cp2;
 	Caractere bit_restant=0,cp1;
 	
