@@ -10,6 +10,7 @@
 #include "structure_dico.h"
 #include <math.h>
 
+/* Fonction d'initialisation du dictionnaire*/
 Dictionnaire Init (void)
 {
 	unsigned int i=0;
@@ -53,22 +54,22 @@ Dictionnaire Init (void)
 	return d;
 }
 
-
+/* Libere tous les noeuds du dico */
 void liberer_noeud(un_noeud * AC)
 {
 	if(AC!=NULL)
 	{
-			if(AC->fils!=NULL)
-				liberer_noeud(AC->fils);
-			if(AC->frere!=NULL)
-				liberer_noeud(AC->frere);
-			free(AC);
+		if(AC->fils!=NULL)
+			liberer_noeud(AC->fils);
+		if(AC->frere!=NULL)
+			liberer_noeud(AC->frere);
+		free(AC);
 	}
 }
 
 
 
-/* si renvoit de temp il a trouve le caractere il faut donc regarder le caractere suivant sinon on doit rajouter ce caractere dans le dico*/
+/* si renvoit de temp il a trouve le caractere il faut donc regarder le caractere suivant sinon on doit rajouter ce caractere dans le dico */
 un_noeud* Est_Dans_Dico (Caractere wc, un_noeud* AC)
 {
 	un_noeud* temp =NULL;
@@ -97,7 +98,7 @@ un_noeud* Est_Dans_Dico (Caractere wc, un_noeud* AC)
 }
 
 
-
+/* Permet d'ajouter un noeud au dictionnaire de compression */
 void Ajouter_Noeud_Dico (Code code,char c,un_noeud* Place)
 {
 	un_noeud *newN = malloc(sizeof(un_noeud));
@@ -117,60 +118,22 @@ void Ajouter_Noeud_Dico (Code code,char c,un_noeud* Place)
 }
 
 
-/*
-  this function gives the higher node in a dictionnary
-  param : a node
-  return a caractere
-*/
+/* Retourne le premier caractere du mot */
 
 Caractere get_first_letter(un_noeud *node)
 {
 	un_noeud *AC= node;
-		while((AC -> pere) != NULL)
-	      	{
-			AC= AC -> pere;
-	      	}
-	    	return AC -> car;
-}
-
-
-Code Recherche_code (Caractere *bit_restant, unsigned int  *nb_bit_restant, int nb_bit_code, Caractere *chaine){
-
-
-	Code res = 0;
-	int i = 0, alire =0;
-	Caractere c;
-
-	alire = nb_bit_code - *nb_bit_restant;
-	
-	res = *bit_restant << alire;
-
-	while (alire>0)
-		{
-		*bit_restant = chaine[i];
-		i++;
-		if(alire>=8){
-			alire-=8;
-			res = res | (*bit_restant << alire);
-			*bit_restant = 0;
-			*nb_bit_restant = 0;
-
-		}
-		else 
-		{
-			*nb_bit_restant = 8 - alire;
-			res = res | (*bit_restant >> (8-alire));
-			c=0;
-			c=*bit_restant;
-			c = (c << alire);
-			*bit_restant = (c >> alire);
-			alire =0;
-		}
+	while((AC -> pere) != NULL)
+	{
+		AC= AC -> pere;
 	}
-	return res;
+	return AC -> car;
 }
 
 
+
+
+/* Permet de nous donner le prochain code à mettre dans le dico */
 int parcours_tab_code (un_noeud **tab_code)
 {
 	int i=0; 
@@ -181,7 +144,7 @@ int parcours_tab_code (un_noeud **tab_code)
 	return i;
 }
 
-
+/* Retourne le nombre de pere du noeud donné en paramètre */
 int nb_pere (un_noeud* n){
 	
 	un_noeud* temp;
@@ -197,39 +160,7 @@ int nb_pere (un_noeud* n){
 
 }
 
-
-Code get_code (FILE *f, Caractere *bit_restant, unsigned int  *nb_bit_restant, int nb_bit_code,int executer_retour)
-{
-	int nb_case = 1,alire = (nb_bit_code - *nb_bit_restant),i;
-	Code code;
-	while (alire>8){
-		alire-=8;
-		nb_case++;
-	}
-	
-	Caractere car_lus[nb_case];
-
-	for(i=0;i<nb_case;i++){
-		car_lus[i] = (Caractere)fgetc(f);
-		
-	}
-	code = Recherche_code (bit_restant,nb_bit_restant,nb_bit_code,car_lus);
-	if(executer_retour==1 && code == 257) 
-	{
-		Caractere tmp1=*bit_restant;
-		unsigned int tmp2=*nb_bit_restant;
-	
-		code = get_code (f,&tmp1,&tmp2,nb_bit_code+1,1);
-		fseek(f,-nb_case, SEEK_CUR);
-	}
-	else if(executer_retour==1)
-		fseek(f,-nb_case, SEEK_CUR);
-	
-	return code;
-}
-
-
-
+/* Permet d'ajouter un noeud au dictionnaire de decompression */
 void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Dictionnaire d)
 {
 	int lg_tab = parcours_tab_code (tab_code);
@@ -238,7 +169,7 @@ void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Diction
 	un_noeud* noeud_actuel=NULL;
 
 
-	if(code_actuel >=START)
+	if(code_actuel >=START) // On regarde si le code actuel est 
 	{
 			noeud_actuel = tab_code[code_actuel-START];
 	}
@@ -276,26 +207,4 @@ void ajout_dico (Code code_actuel,Code code_suivant, un_noeud **tab_code,Diction
 	noeud_actuel -> fils = new_noeud;
 	tab_code[lg_tab] = new_noeud;
 }
-
-
-
-/*
-void Afficher_chaine_de (un_noeud *lettre){
-
-	int lg;
-	char* chaine;
-	
-	lg = nb_pere(lettre);
-					
-	chaine = malloc(lg*sizeof(char));
-	
-	while (lettre != NULL && lg >= 0){
-		chaine[lg]=lettre->car;
-		lg--;
-		lettre = lettre -> pere;
-	}
-	printf("-%s-\n",chaine);
-
-
-}*/
 
